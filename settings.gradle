@@ -1,1 +1,14 @@
-rootProject.name = 'WorldLock'
+pluginManagement {
+    repositories {
+        maven { url = "https://maven.architectury.dev/" }
+        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://maven.fabricmc.net/" }
+        gradlePluginPortal()
+    }
+    plugins {
+        id "com.github.johnrengelman.shadow" version "8.1.1"
+    }
+}
+
+rootProject.name = "LostTrinkets"
+include("common", "forge", "fabric")

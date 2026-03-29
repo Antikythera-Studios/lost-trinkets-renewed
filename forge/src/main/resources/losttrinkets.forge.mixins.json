@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "package": "guivnf.losttrinkets.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ForgeItemStackMixin"
+  ],
+  "minVersion": "0.8",
+  "refmap": "losttrinkets.forge.refmap.json"
+}

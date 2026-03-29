@@ -1,0 +1,23 @@
+architectury {
+    common("forge", "fabric")
+}
+
+loom {
+    mixin {
+        defaultRefmapName = "${project.mod_id}.refmap.json"
+    }
+}
+
+dependencies {
+    modImplementation "dev.architectury:architectury:${project.architectury_version}"
+
+    // forge-config-api-port: provides ForgeConfigSpec for common compilation;
+    // forge uses its own, fabric uses the separate mod at runtime
+    compileOnly("fuzs.forgeconfigapiport:forgeconfigapiport-common:${project.forge_config_api_port_version}") { transitive false }
+
+    // JEI (compile only - optional compat)
+    compileOnly("mezz.jei:jei-${project.mc_version}-common-api:${project.jei_version}") { transitive false }
+
+    // Curios (compile only - optional compat, Forge concept but API is common)
+    compileOnly("top.theillusivec4.curios:curios-forge:${project.curios_version}:api") { transitive false }
+}

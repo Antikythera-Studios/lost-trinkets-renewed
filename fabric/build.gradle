@@ -1,0 +1,74 @@
+plugins {
+    id "com.github.johnrengelman.shadow"
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+loom {
+    mixin {
+        defaultRefmapName = "${project.mod_id}.refmap.json"
+    }
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
+
+    modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forge_config_api_port_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    // JEI (compile-only; runtimeOnly disabled - JEI Fabric jar uses intermediary namespace in access widener, incompatible with Loom dev named namespace)
+    compileOnly("mezz.jei:jei-${project.mc_version}-fabric-api:${project.jei_version}") { transitive false }
+}
+
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+               "fabric_loader_version": project.fabric_loader_version,
+               "fabric_api_version": project.fabric_api_version,
+               "mc_version": project.mc_version
+    }
+    from project(":common").sourceSets.main.resources, {
+        include "resourcepacks/**"
+    }
+}
+
+shadowJar {
+    exclude "META-INF/mods.toml"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier = null
+}
+
+jar {
+    archiveClassifier = "dev"
+}
+
+sourcesJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}

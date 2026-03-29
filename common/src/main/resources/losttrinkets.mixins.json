@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "package": "guivnf.losttrinkets.core.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AbstractBlockStateMixin",
+    "CobwebBlockMixin",
+    "EnchantmentContainerMixin",
+    "EnchantmentHelperMixin",
+    "EnderPearlItemMixin",
+    "EndermanMixin",
+    "EntityPredicateMixin",
+    "FishingHookMixin",
+    "ItemEntityAccessor",
+    "LivingEntityMixin",
+    "MerchantResultSlotMixin",
+    "MobAccessor",
+    "PigEntityMixin",
+    "PlayerDataMixin",
+    "PlayerEntityMixin",
+    "VillagerEntityMixin"
+  ],
+  "client": [
+    "ClientEntityMixin",
+    "ClientLivingEntityRendererMixin"
+  ],
+  "minVersion": "0.8"
+}

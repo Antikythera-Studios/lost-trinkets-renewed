@@ -1,0 +1,51 @@
+package guivnf.losttrinkets.network.packet;
+
+import dev.architectury.networking.NetworkManager;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import guivnf.losttrinkets.LostTrinkets;
+import guivnf.losttrinkets.api.LostTrinketsAPI;
+import guivnf.losttrinkets.api.trinket.Trinkets;
+import guivnf.losttrinkets.config.Configs;
+import guivnf.losttrinkets.network.LTPacket;
+
+public class UnlockSlotPacket implements LTPacket {
+    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "unlock_slot");
+
+    @Override
+    public ResourceLocation getId() {
+        return ID;
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
+    }
+
+    public static UnlockSlotPacket decode(FriendlyByteBuf buf) {
+        return new UnlockSlotPacket();
+    }
+
+    public static void handle(UnlockSlotPacket msg, NetworkManager.PacketContext ctx) {
+        Player player = ctx.getPlayer();
+        if (player != null) {
+            Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
+            int cost = Configs.GENERAL.calcCost(trinkets);
+            if (cost >= 0) {
+                if (player.isCreative()) {
+                    trinkets.unlockSlot();
+                } else if (player.experienceLevel >= cost) {
+                    if (trinkets.unlockSlot()) {
+                        player.giveExperienceLevels(-cost);
+                    }
+                }
+            }
+            // Always sync back so the client's optimistic update is corrected on rejection
+            LostTrinketsAPI.getData(player).setSync(true);
+        }
+    }
+
+    public static void register() {
+        LostTrinkets.NET.registerC2S(ID, UnlockSlotPacket::decode, UnlockSlotPacket::handle);
+    }
+}

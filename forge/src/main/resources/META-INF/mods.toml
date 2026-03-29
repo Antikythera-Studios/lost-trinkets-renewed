@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+issueTrackerURL="https://github.com/guivnf/lost-trinkets/issues"
+license="LGPLv3"
+
+[[mods]]
+modId="losttrinkets"
+version="${version}"
+displayName="Lost Trinkets"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/lost-trinkets"
+authors="guivnf"
+description='''
+70+ Unlockable trinkets with different useful abilities.
+'''
+
+[[dependencies.losttrinkets]]
+    modId="architectury"
+    mandatory=true
+    versionRange="[9.0.0,)"
+    ordering="BEFORE"
+    side="BOTH"
+
+[[dependencies.losttrinkets]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47.0.0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.losttrinkets]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"

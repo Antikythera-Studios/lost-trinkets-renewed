@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "losttrinkets",
+  "version": "${version}",
+  "name": "Lost Trinkets",
+  "description": "70+ Unlockable trinkets with different useful abilities.",
+  "authors": ["guivnf"],
+  "contact": {
+    "issues": "https://github.com/guivnf/lost-trinkets/issues",
+    "sources": "https://github.com/guivnf/lost-trinkets"
+  },
+  "license": "LGPLv3",
+  "icon": "assets/losttrinkets/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["guivnf.losttrinkets.fabric.LostTrinketsFabricMod"],
+    "client": ["guivnf.losttrinkets.fabric.LostTrinketsFabricClientMod"]
+  },
+  "mixins": [
+    "losttrinkets.mixins.json",
+    "losttrinkets.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.3",
+    "fabric-api": "*",
+    "architectury": ">=9.0.0",
+    "minecraft": "~1.20.1",
+    "forgeconfigapiport": ">=8.0.0"
+  },
+  "suggests": {
+    "jei": "*"
+  }
+}

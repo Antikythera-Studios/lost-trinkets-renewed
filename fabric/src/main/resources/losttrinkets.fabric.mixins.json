@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "guivnf.losttrinkets.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [],
+  "minVersion": "0.8"
+}
