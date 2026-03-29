@@ -10,7 +10,7 @@ architectury {
 
 allprojects {
     group = project.mod_group
-    version = "${project.mc_version}-${project.mod_version}"
+    version = "${project.mod_version}-mc${project.mc_version}"
 }
 
 subprojects {
@@ -18,7 +18,7 @@ subprojects {
     apply plugin: "architectury-plugin"
 
     base {
-        archivesName = "${project.mod_name}-${project.name}"
+        archivesName = "${project.mod_name}"
     }
 
     repositories {
