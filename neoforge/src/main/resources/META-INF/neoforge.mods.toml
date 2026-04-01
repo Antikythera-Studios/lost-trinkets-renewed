@@ -8,7 +8,8 @@ modId="losttrinkets"
 version="${version}"
 displayName="Lost Trinkets"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/lost-trinkets"
-authors="guivnf"
+logoFile="assets/losttrinkets/icon.png"
+authors="owmii, guivnf"
 description='''
 70+ Unlockable trinkets with different useful abilities.
 '''

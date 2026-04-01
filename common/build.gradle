@@ -2,6 +2,12 @@ architectury {
     common("neoforge", "fabric")
 }
 
+loom {
+    mixin {
+        defaultRefmapName = "losttrinkets.refmap.json"
+    }
+}
+
 dependencies {
     modImplementation "dev.architectury:architectury:${project.architectury_version}"
 
