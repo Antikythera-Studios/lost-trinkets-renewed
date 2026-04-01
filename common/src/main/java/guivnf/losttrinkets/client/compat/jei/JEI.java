@@ -23,6 +23,6 @@ public class JEI implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(LostTrinkets.MOD_ID, "main");
+        return ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "main");
     }
 }

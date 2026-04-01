@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ITrinket {
     default void addTrinketDescription(ItemStack stack, List<Component> lines) {
-        // info.losttrinkets.<name>
+
         String key = stack.getItem().getDescriptionId().replace("item.", "info.");
         lines.add(Component.translatable(key).withStyle(net.minecraft.ChatFormatting.GRAY));
     }

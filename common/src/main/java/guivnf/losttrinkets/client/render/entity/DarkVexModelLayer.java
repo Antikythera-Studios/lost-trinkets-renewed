@@ -6,5 +6,5 @@ import guivnf.losttrinkets.LostTrinkets;
 
 public class DarkVexModelLayer {
     public static final ModelLayerLocation DARK_VEX = new ModelLayerLocation(
-            new ResourceLocation(LostTrinkets.MOD_ID, "dark_vex"), "main");
+            ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "dark_vex"), "main");
 }

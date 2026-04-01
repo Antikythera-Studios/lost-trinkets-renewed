@@ -2,7 +2,7 @@ package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import guivnf.losttrinkets.LostTrinkets;
@@ -14,7 +14,7 @@ import guivnf.losttrinkets.client.util.MC;
 import guivnf.losttrinkets.network.LTPacket;
 
 public class TrinketUnlockedPacket implements LTPacket {
-    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "trinket_unlocked");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "trinket_unlocked");
 
     private final String key;
 
@@ -28,17 +28,17 @@ public class TrinketUnlockedPacket implements LTPacket {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeUtf(key);
     }
 
-    public static TrinketUnlockedPacket decode(FriendlyByteBuf buf) {
+    public static TrinketUnlockedPacket decode(RegistryFriendlyByteBuf buf) {
         return new TrinketUnlockedPacket(buf.readUtf(32767));
     }
 
     public static void handle(TrinketUnlockedPacket msg, NetworkManager.PacketContext ctx) {
         MC.player().ifPresent(player -> {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(msg.key));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(msg.key));
             if (item instanceof ITrinket) {
                 HudHandler.add(new Toast((ITrinket) item));
                 player.playSound(Sounds.UNLOCK.get(), 1.0F, 1.0F);

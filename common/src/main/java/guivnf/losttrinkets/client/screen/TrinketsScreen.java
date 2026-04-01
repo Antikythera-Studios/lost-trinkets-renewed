@@ -59,8 +59,7 @@ public class TrinketsScreen extends AbstractLTScreen {
                                 button -> {
                                     if (locked) {
                                         LostTrinkets.NET.toServer(new UnlockSlotPacket());
-                                        // optimistic client-side update — button is only active when canAfford,
-                                        // so the server will accept; sync packet corrects on rejection anyway.
+
                                         LostTrinketsAPI.getTrinkets(this.minecraft.player).unlockSlot();
                                         this.minecraft.setScreen(new TrinketsScreen());
                                     } else {
@@ -93,7 +92,7 @@ public class TrinketsScreen extends AbstractLTScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mx, my, pt);
         super.render(guiGraphics, mx, my, pt);
         String s = getTitle().getString();
         guiGraphics.drawString(this.font, s, this.width / 2 - this.font.width(s) / 2, this.y - 20, 0x999999);

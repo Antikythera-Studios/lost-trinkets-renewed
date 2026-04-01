@@ -28,8 +28,7 @@ public class MagicalFeathersTrinket extends Trinket<MagicalFeathersTrinket> impl
         if (!data.allowFlying) {
             data.allowFlying = true;
             if (!level.isClientSide && player instanceof ServerPlayer sp) {
-                // sync through both the vanilla ability system and the custom packet so
-                // the client cannot be in an inconsistent state regardless of login order.
+
                 sp.onUpdateAbilities();
                 LostTrinkets.NET.toClient(new SyncFlyPacket(true), player);
             }

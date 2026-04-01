@@ -29,7 +29,7 @@ public class ThaCloudTrinket extends Trinket<ThaCloudTrinket> implements ITickab
         if (player.fallDistance > 3.0F && player.getDeltaMovement().y < 0
                 && !player.level().isEmptyBlock(player.blockPosition().below(3))) {
             Vec3 motion = player.getDeltaMovement();
-            // Give a slight upward push not stop them entirely.
+
             player.setDeltaMovement(motion.x, 0.4D, motion.z);
 
             player.fallDistance = 0.0F;

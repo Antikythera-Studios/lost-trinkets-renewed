@@ -27,7 +27,6 @@ public interface ILostTrinketsAPI {
         return !isEnabled(trinket);
     }
 
-    // only contains trinkets that are also enabled
     Set<ITrinket> getRandomTrinkets();
 
     default boolean isRandom(ITrinket trinket) {

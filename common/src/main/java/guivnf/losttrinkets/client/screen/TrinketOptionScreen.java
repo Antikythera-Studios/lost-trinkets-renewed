@@ -44,7 +44,7 @@ public class TrinketOptionScreen extends AbstractLTScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mx, my, pt);
         int x = this.width / 2 - 8;
         int y = this.height / 3 - 8;
         guiGraphics.pose().pushPose();

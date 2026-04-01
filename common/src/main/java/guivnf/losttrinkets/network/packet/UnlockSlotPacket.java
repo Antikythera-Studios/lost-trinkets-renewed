@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
@@ -11,7 +11,7 @@ import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.network.LTPacket;
 
 public class UnlockSlotPacket implements LTPacket {
-    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "unlock_slot");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "unlock_slot");
 
     @Override
     public ResourceLocation getId() {
@@ -19,10 +19,10 @@ public class UnlockSlotPacket implements LTPacket {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
     }
 
-    public static UnlockSlotPacket decode(FriendlyByteBuf buf) {
+    public static UnlockSlotPacket decode(RegistryFriendlyByteBuf buf) {
         return new UnlockSlotPacket();
     }
 
@@ -40,7 +40,7 @@ public class UnlockSlotPacket implements LTPacket {
                     }
                 }
             }
-            // Always sync back so the client's optimistic update is corrected on rejection
+
             LostTrinketsAPI.getData(player).setSync(true);
         }
     }

@@ -16,7 +16,7 @@ public class GoldenRingTrinket extends Trinket<GoldenRingTrinket> implements ITi
 
     @Override
     public void tick(Level level, BlockPos pos, Player player) {
-        // don't repair if player is currently swinging
+
         if (level.getGameTime() % 40 == 0 && !player.swinging) {
             for (InteractionHand hand : InteractionHand.values()) {
                 ItemStack stack = player.getItemInHand(hand);

@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -10,7 +10,7 @@ import guivnf.losttrinkets.client.util.MC;
 import guivnf.losttrinkets.network.LTPacket;
 
 public class SyncFlyPacket implements LTPacket {
-    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "sync_fly");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_fly");
 
     private final boolean fly;
 
@@ -24,11 +24,11 @@ public class SyncFlyPacket implements LTPacket {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeBoolean(fly);
     }
 
-    public static SyncFlyPacket decode(FriendlyByteBuf buf) {
+    public static SyncFlyPacket decode(RegistryFriendlyByteBuf buf) {
         return new SyncFlyPacket(buf.readBoolean());
     }
 

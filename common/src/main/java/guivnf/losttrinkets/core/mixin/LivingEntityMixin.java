@@ -19,8 +19,7 @@ import java.util.List;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    // also handled by MobEffectEvent.Applicable on Forge inject at RETURN so we
-    // only override when still true
+
     @Inject(method = "canBeAffected", at = @At("RETURN"), cancellable = true)
     private void losttrinkets$denyMobEffect(MobEffectInstance effectInstance,
             CallbackInfoReturnable<Boolean> cir) {
@@ -31,7 +30,6 @@ public class LivingEntityMixin {
         }
     }
 
-    // fabric only on Forge, LivingTickEvent in ForgeEventHandler handles this
     @Inject(method = "tick", at = @At("HEAD"))
     private void losttrinkets$livingTick(CallbackInfo ci) {
         if (!dev.architectury.platform.Platform.isFabric())
@@ -42,10 +40,9 @@ public class LivingEntityMixin {
         }
     }
 
-    // fabric only on Forge, LivingDropsEvent in ForgeEventHandler handles this
     @Inject(method = "die", at = @At("HEAD"))
     private void losttrinkets$extraDrops(DamageSource source, CallbackInfo ci) {
-        if (dev.architectury.platform.Platform.isForge())
+        if (dev.architectury.platform.Platform.isNeoForge())
             return;
         LivingEntity self = (LivingEntity) (Object) this;
         if (self.level().isClientSide())

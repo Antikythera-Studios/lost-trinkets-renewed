@@ -23,7 +23,7 @@ public class ClientLivingEntityRendererMixin {
             PoseStack poseStack, MultiBufferSource buffer, int packedLight,
             CallbackInfo ci) {
         if (Platform.isForge())
-            return; // forge handles this via RenderLivingEvent.Pre
+            return;
         if (!(entity instanceof Player player))
             return;
         Minecraft mc = Minecraft.getInstance();

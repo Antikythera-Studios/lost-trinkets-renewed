@@ -21,7 +21,7 @@ public class StackHelper {
             ItemEntity entity = player.drop(stack, false);
             if (entity != null) {
                 entity.setNoPickUpDelay();
-                entity.setThrower(player.getUUID());
+                entity.setThrower(player);
             }
         }
     }

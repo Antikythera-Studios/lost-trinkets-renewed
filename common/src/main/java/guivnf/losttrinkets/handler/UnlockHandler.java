@@ -19,11 +19,13 @@ import java.util.*;
 public class UnlockHandler {
 
     private static final TagKey<Block> FORGE_ORES = TagKey.create(Registries.BLOCK,
-            new ResourceLocation("forge", "ores"));
+            ResourceLocation.fromNamespaceAndPath("forge", "ores"));
+    private static final TagKey<Block> NEOFORGE_ORES = TagKey.create(Registries.BLOCK,
+            ResourceLocation.fromNamespaceAndPath("neoforge", "ores"));
     private static final TagKey<Block> COMMON_ORES = TagKey.create(Registries.BLOCK,
-            new ResourceLocation("c", "ores"));
+            ResourceLocation.fromNamespaceAndPath("c", "ores"));
     private static final TagKey<Block> COMMON_LOGS = TagKey.create(Registries.BLOCK,
-            new ResourceLocation("c", "logs"));
+            ResourceLocation.fromNamespaceAndPath("c", "logs"));
 
     private static final Map<UUID, Type> MAP = new HashMap<>();
     private static final Ticker DELAY = new Ticker(10);
@@ -97,7 +99,7 @@ public class UnlockHandler {
 
     public static void checkBlockHarvest(Player player, Level level, BlockPos pos, BlockState state) {
         if (Configs.GENERAL.unlockEnabled && !level.isClientSide) {
-            if (state.is(FORGE_ORES) || state.is(COMMON_ORES)) {
+            if (state.is(FORGE_ORES) || state.is(NEOFORGE_ORES) || state.is(COMMON_ORES)) {
                 if (Configs.GENERAL.oresMiningUnlockEnabled) {
                     queueUnlock(player, Type.ORE_MINE);
                 }

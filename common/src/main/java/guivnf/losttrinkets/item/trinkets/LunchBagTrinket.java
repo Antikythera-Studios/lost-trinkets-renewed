@@ -1,5 +1,6 @@
 package guivnf.losttrinkets.item.trinkets;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -19,9 +20,9 @@ public class LunchBagTrinket extends Trinket<LunchBagTrinket> {
 
     public static void onItemEaten(Player player, ItemStack stack, Level level) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-        if (stack.getItem().isEdible()) {
-            FoodProperties food = stack.getItem().getFoodProperties();
-            if (food != null && food.getEffects().isEmpty()) {
+        if (stack.has(DataComponents.FOOD)) {
+            FoodProperties food = stack.get(DataComponents.FOOD);
+            if (food != null && food.effects().isEmpty()) {
                 if (trinkets.isActive(Itms.LUNCH_BAG.get()) && level.random.nextInt(10) == 0) {
                     player.addEffect(new MobEffectInstance(MobEffects.SATURATION,
                             level.random.nextInt(200) + 100, 1, false, false));

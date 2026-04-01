@@ -1,5 +1,6 @@
 package guivnf.losttrinkets.item.trinkets;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +15,7 @@ public class CoffeeBeanTrinket extends Trinket<CoffeeBeanTrinket> {
         super(rarity, properties);
     }
 
-    public static boolean shouldDenyEffect(Player player, MobEffect effect) {
+    public static boolean shouldDenyEffect(Player player, Holder<MobEffect> effect) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (trinkets.isActive(Itms.COFFEE_BEAN.get())) {
             return effect == MobEffects.CONFUSION

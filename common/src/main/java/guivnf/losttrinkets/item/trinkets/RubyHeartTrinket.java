@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class RubyHeartTrinket extends Trinket<RubyHeartTrinket> {
-    // saved before-damage health, keyed by UUID
+
     private static final HashMap<UUID, Float> lastHealths = new HashMap<>();
 
     public RubyHeartTrinket(Rarity rarity, Properties properties) {
         super(rarity, properties);
     }
 
-    /** Called before damage is applied to save current health. */
     public static void saveHealth(Player player) {
         lastHealths.put(player.getUUID(), player.getHealth());
     }

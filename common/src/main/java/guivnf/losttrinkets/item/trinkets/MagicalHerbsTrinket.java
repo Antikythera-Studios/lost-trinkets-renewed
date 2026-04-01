@@ -1,6 +1,7 @@
 package guivnf.losttrinkets.item.trinkets;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffects;
@@ -19,10 +20,10 @@ public class MagicalHerbsTrinket extends Trinket<MagicalHerbsTrinket> {
         super(rarity, properties);
     }
 
-    public static boolean shouldDenyEffect(Player player, MobEffect effect) {
+    public static boolean shouldDenyEffect(Player player, Holder<MobEffect> effect) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (trinkets.isActive(Itms.MAGICAL_HERBS.get())) {
-            return effect.getCategory() == MobEffectCategory.HARMFUL || effect == MobEffects.BAD_OMEN;
+            return effect.value().getCategory() == MobEffectCategory.HARMFUL || effect == MobEffects.BAD_OMEN;
         }
         return false;
     }
@@ -31,9 +32,8 @@ public class MagicalHerbsTrinket extends Trinket<MagicalHerbsTrinket> {
     public void onActivated(Level level, BlockPos pos, Player player) {
         if (level.isClientSide)
             return;
-        List<MobEffect> toRemove = player.getActiveEffectsMap().values().stream()
-                .map(inst -> inst.getEffect())
-                .filter(e -> e.getCategory() == MobEffectCategory.HARMFUL || e == MobEffects.BAD_OMEN)
+        List<Holder<MobEffect>> toRemove = player.getActiveEffectsMap().keySet().stream()
+                .filter(e -> e.value().getCategory() == MobEffectCategory.HARMFUL || e == MobEffects.BAD_OMEN)
                 .toList();
         toRemove.forEach(player::removeEffect);
     }

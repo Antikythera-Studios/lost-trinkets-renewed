@@ -21,7 +21,7 @@ public class AbstractLTScreen extends LTScreen {
             this.minecraft.setScreen(this.toRefresh);
             this.toRefresh = null;
         }
-        // always reset a stray SyncDataPacket must not leave refresh=true permanently
+
         this.refresh = false;
     }
 

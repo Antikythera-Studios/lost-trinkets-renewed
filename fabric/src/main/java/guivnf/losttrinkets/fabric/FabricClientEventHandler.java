@@ -3,6 +3,8 @@ package guivnf.losttrinkets.fabric;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.events.common.InteractionEvent;
+import net.minecraft.world.InteractionHand;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -38,8 +40,13 @@ public class FabricClientEventHandler {
             }
         });
 
-        // populate trinket registry on client start — fixes "Disabled" tooltip on Fabric
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> UnlockManager.init());
+
+        InteractionEvent.CLIENT_RIGHT_CLICK_AIR.register((player, hand) -> {
+            if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
+                guivnf.losttrinkets.item.trinkets.MagnetoTrinket.trySendCollect(player);
+            }
+        });
 
         KeyBindingHelper.registerKeyBinding(KeyHandler.TRINKET_GUI);
         KeyBindingHelper.registerKeyBinding(KeyHandler.MAGNETO);

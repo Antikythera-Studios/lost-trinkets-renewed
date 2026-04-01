@@ -25,7 +25,7 @@ public class FireMindTrinket extends Trinket<FireMindTrinket> {
             if (target instanceof Player player) {
                 Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
                 if (trinkets.isActive(Itms.FIRE_MIND.get()) && !mob.fireImmune()) {
-                    mob.setSecondsOnFire(3);
+                    mob.igniteForSeconds(3.0F);
                 }
             }
         }

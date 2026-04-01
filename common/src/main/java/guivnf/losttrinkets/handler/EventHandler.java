@@ -1,6 +1,6 @@
 package guivnf.losttrinkets.handler;
 
-import net.minecraft.world.InteractionHand;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -128,7 +128,7 @@ public class EventHandler {
         return extras;
     }
 
-    public static boolean shouldDenyMobEffect(Player player, MobEffect effect) {
+    public static boolean shouldDenyMobEffect(Player player, Holder<MobEffect> effect) {
         return CoffeeBeanTrinket.shouldDenyEffect(player, effect)
                 || MagicalHerbsTrinket.shouldDenyEffect(player, effect)
                 || OxalisTrinket.shouldDenyEffect(player, effect)
@@ -139,22 +139,6 @@ public class EventHandler {
         CreepoTrinket.onCriticalHit(player, target);
     }
 
-    public static int onLooting(net.minecraft.world.damagesource.DamageSource source) {
-        if (source == null)
-            return 0;
-        if (source.getEntity() instanceof Player) {
-            Player player = (Player) source.getEntity();
-            Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-            int bonus = 0;
-            if (trinkets.isActive(Itms.GOLDEN_HORSESHOE.get()))
-                bonus++;
-            if (trinkets.isActive(Itms.GOLDEN_TOOTH.get()))
-                bonus++;
-            return bonus;
-        }
-        return 0;
-    }
-
     public static void onItemEaten(Player player, ItemStack stack, Level level) {
         GoldenMelonTrinket.onItemEaten(player, stack, level);
         LunchBagTrinket.onItemEaten(player, stack, level);
@@ -162,12 +146,6 @@ public class EventHandler {
 
     public static float onBreakSpeed(Player player, float original) {
         return MinersPickTrinket.onBreakSpeed(player, original);
-    }
-
-    public static void onRightClickAir(Player player, InteractionHand hand) {
-        if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
-            MagnetoTrinket.tryCollectServer(player);
-        }
     }
 
     public static void onBreak(Player player, net.minecraft.core.BlockPos pos,

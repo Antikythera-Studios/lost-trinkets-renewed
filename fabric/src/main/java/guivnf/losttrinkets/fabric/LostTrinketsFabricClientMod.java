@@ -14,7 +14,7 @@ public class LostTrinketsFabricClientMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ResourceManagerHelper.registerBuiltinResourcePack(
-                new ResourceLocation(LostTrinkets.MOD_ID, "legacy"),
+                ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "legacy"),
                 FabricLoader.getInstance().getModContainer(LostTrinkets.MOD_ID).orElseThrow(),
                 ResourcePackActivationType.NORMAL
         );

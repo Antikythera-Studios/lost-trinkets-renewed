@@ -22,7 +22,6 @@ public class TargetHandler {
             if (target instanceof Player) {
                 Player player = (Player) target;
 
-                // boss mobs always allowed to target
                 if (isBossMob(mob)) {
                     return false;
                 }

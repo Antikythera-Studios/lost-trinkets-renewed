@@ -1,14 +1,14 @@
 package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.network.LTPacket;
 
 public class MagnetoPacket implements LTPacket {
-    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "magneto");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "magneto");
 
     @Override
     public ResourceLocation getId() {
@@ -16,10 +16,10 @@ public class MagnetoPacket implements LTPacket {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
     }
 
-    public static MagnetoPacket decode(FriendlyByteBuf buf) {
+    public static MagnetoPacket decode(RegistryFriendlyByteBuf buf) {
         return new MagnetoPacket();
     }
 

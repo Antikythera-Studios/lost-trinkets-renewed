@@ -63,7 +63,7 @@ public class Trinkets {
 
         for (int i = 0; i < availableTrinkets.size(); i++) {
             CompoundTag nbt1 = availableTrinkets.getCompound(i);
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(nbt1.getString("trinket")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(nbt1.getString("trinket")));
             if (item instanceof ITrinket) {
                 this.available.add((ITrinket) item);
             }
@@ -75,7 +75,7 @@ public class Trinkets {
         this.targeting.clear();
         for (int i = 0; i < activeTrinkets.size(); i++) {
             CompoundTag nbt1 = activeTrinkets.getCompound(i);
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(nbt1.getString("trinket")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(nbt1.getString("trinket")));
             if (item instanceof ITrinket) {
                 ITrinket trinket = (ITrinket) item;
                 if (this.active.size() < this.slots) {

@@ -28,9 +28,6 @@ public class DataManager {
             newPlayer.setHealth(oldPlayer.getHealth());
         }
 
-        // send immediately PLAYER_RESPAWN may fire before PLAYER_CLONE on some Fabric
-        // versions
-        // setSync(true) ensures tracking players get updated next tick
         sync(newPlayer);
         newData.setSync(true);
     }
@@ -45,8 +42,7 @@ public class DataManager {
 
     public static void loggedIn(Player player) {
         PlayerData data = LostTrinketsAPI.getData(player);
-        // force MagicalFeathersTrinket to resend SyncFlyPacket on first tick after
-        // login
+
         data.allowFlying = false;
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         trinkets.initSlots(Configs.GENERAL.startSlots);
@@ -57,7 +53,7 @@ public class DataManager {
     public static void loggedOut(Player player) {
         PlayerData data = LostTrinketsAPI.getData(player);
         data.wasFlying = player.getAbilities().flying;
-        // reset so SyncFlyPacket is resent on next login
+
         data.allowFlying = false;
     }
 

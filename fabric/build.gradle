@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow"
+    id "com.gradleup.shadow"
 }
 
 architectury {
@@ -7,15 +7,15 @@ architectury {
     fabric()
 }
 
-loom {
-    mixin {
-        defaultRefmapName = "${project.mod_id}.refmap.json"
-    }
-}
-
 configurations {
-    common
-    shadowCommon
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
@@ -30,18 +30,14 @@ dependencies {
     modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forge_config_api_port_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    shadowBundle project(path: ":common", configuration: "transformProductionFabric")
 
-    // JEI (compile-only; runtimeOnly disabled - JEI Fabric jar uses intermediary namespace in access widener, incompatible with Loom dev named namespace)
     compileOnly("mezz.jei:jei-${project.mc_version}-fabric-api:${project.jei_version}") { transitive false }
 }
 
 processResources {
     filesMatching("fabric.mod.json") {
-        expand "version": project.version,
-               "fabric_loader_version": project.fabric_loader_version,
-               "fabric_api_version": project.fabric_api_version,
-               "mc_version": project.mc_version
+        expand "version": project.version
     }
     from project(":common").sourceSets.main.resources, {
         include "resourcepacks/**"
@@ -49,15 +45,15 @@ processResources {
 }
 
 shadowJar {
-    exclude "META-INF/mods.toml"
+    exclude "META-INF/neoforge.mods.toml"
     exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = "fabric"
 }

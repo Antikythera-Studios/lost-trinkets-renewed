@@ -1,7 +1,7 @@
 plugins {
-    id "architectury-plugin" version "${architectury_plugin_version}"
     id "dev.architectury.loom" version "${architectury_loom_version}" apply false
-    id "com.github.johnrengelman.shadow" version "8.1.1" apply false
+    id "architectury-plugin" version "${architectury_plugin_version}"
+    id "com.gradleup.shadow" version "8.3.6" apply false
 }
 
 architectury {
@@ -23,12 +23,12 @@ subprojects {
 
     repositories {
         maven { url = "https://maven.architectury.dev/" }
-        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://maven.neoforged.net/releases" }
         maven { url = "https://maven.fabricmc.net/" }
-        maven { url = "https://dvs1.progwml6.com/files/maven" }    // JEI
-        maven { url = "https://modmaven.dev" }                      // JEI mirror
-        maven { url = "https://maven.theillusivec4.top" }           // Curios
-        maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }  // forge-config-api-port
+        maven { url = "https://dvs1.progwml6.com/files/maven" }
+        maven { url = "https://modmaven.dev" }
+        maven { url = "https://maven.theillusivec4.top" }
+        maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
     }
 
     dependencies {
@@ -39,20 +39,17 @@ subprojects {
     java {
         withSourcesJar()
         toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
+            languageVersion = JavaLanguageVersion.of(21)
         }
     }
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
     }
 
     processResources {
         inputs.property "version", project.version
-        filesMatching("META-INF/mods.toml") {
-            expand "version": project.version
-        }
         filesMatching("fabric.mod.json") {
             expand "version": project.version
         }

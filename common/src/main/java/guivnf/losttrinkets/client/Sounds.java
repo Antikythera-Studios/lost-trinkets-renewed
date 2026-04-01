@@ -12,7 +12,7 @@ public class Sounds {
     public static final RegistrySupplier<SoundEvent> UNLOCK = register("unlock");
 
     static RegistrySupplier<SoundEvent> register(String name) {
-        ResourceLocation rl = new ResourceLocation(LostTrinkets.MOD_ID, name);
+        ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, name);
         return REG.register(name, () -> SoundEvent.createVariableRangeEvent(rl));
     }
 }

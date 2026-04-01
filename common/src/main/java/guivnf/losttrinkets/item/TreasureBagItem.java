@@ -1,6 +1,8 @@
 package guivnf.losttrinkets.item;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -31,7 +33,7 @@ public class TreasureBagItem extends Item {
                     .withLuck(player.getLuck())
                     .create(LootContextParamSets.GIFT);
             ResourceLocation rl = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(this));
-            LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(rl);
+            LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, rl));
             List<ItemStack> stacks = lootTable.getRandomItems(lootParams);
             stacks.forEach(stack -> {
                 if (!player.getInventory().add(stack.copy())) {

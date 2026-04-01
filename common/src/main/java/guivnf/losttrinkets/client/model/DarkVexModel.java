@@ -87,13 +87,12 @@ public class DarkVexModel extends EntityModel<DarkVexEntity> {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer,
-            int packedLight, int packedOverlay,
-            float red, float green, float blue, float alpha) {
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+            int packedLight, int packedOverlay, int color) {
+        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }

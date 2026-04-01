@@ -13,7 +13,7 @@ public class Textures {
     public static final Texture TRINKET_NEXT = register("trinket", 26, 15, 26, 26);
 
     static Texture register(String path, int width, int height, int u, int v) {
-        return new Texture(new ResourceLocation(LostTrinkets.MOD_ID, "textures/gui/" + path + ".png"), u, v, width,
+        return new Texture(ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "textures/gui/" + path + ".png"), u, v, width,
                 height, 256, 256);
     }
 }

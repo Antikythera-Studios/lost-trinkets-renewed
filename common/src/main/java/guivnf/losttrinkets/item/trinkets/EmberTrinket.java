@@ -21,7 +21,7 @@ public class EmberTrinket extends Trinket<EmberTrinket> {
             if (entityLiving instanceof Player player) {
                 Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
                 if (trinkets.isActive(Itms.EMBER.get())) {
-                    living.setSecondsOnFire(10);
+                    living.igniteForSeconds(10.0F);
                 }
             }
         }

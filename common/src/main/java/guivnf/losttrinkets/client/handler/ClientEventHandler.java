@@ -18,7 +18,6 @@ public class ClientEventHandler {
         if (mc.player == null || mc.level == null)
             return false;
 
-        // hide the player if invisible with tha_ghost active
         if (living instanceof Player player) {
             if (player.hasEffect(MobEffects.INVISIBILITY)
                     && LostTrinketsAPI.getTrinkets(player).isActive(Itms.THA_GHOST.get())) {

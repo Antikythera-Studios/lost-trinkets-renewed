@@ -1,24 +1,28 @@
-package guivnf.losttrinkets.forge;
+package guivnf.losttrinkets.neoforge;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.CriticalHitEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.command.MainCommand;
 import guivnf.losttrinkets.entity.DarkVexEntity;
@@ -29,22 +33,25 @@ import guivnf.losttrinkets.util.ServerHelper;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = LostTrinkets.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ForgeEventHandler {
+@EventBusSubscriber(modid = LostTrinkets.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+public class NeoForgeEventHandler {
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && !event.player.level().isClientSide) {
-            EventHandler.tick(event.player);
-            if (event.player instanceof net.minecraft.server.level.ServerPlayer sp) {
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide) {
+            EventHandler.tick(player);
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
                 DataManager.update(sp);
             }
         }
     }
 
     @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
-        EventHandler.onLivingUpdate(event.getEntity());
+    public static void onEntityTick(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LivingEntity living) {
+            EventHandler.onLivingUpdate(living);
+        }
     }
 
     @SubscribeEvent
@@ -63,16 +70,16 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event) {
+    public static void onLivingAttack(LivingIncomingDamageEvent event) {
         if (EventHandler.onAttack(event.getEntity(), event.getSource())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public static void onLivingHurt(LivingHurtEvent event) {
-        float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getAmount());
-        event.setAmount(amount);
+    public static void onLivingHurt(LivingDamageEvent.Pre event) {
+        float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
+        event.getContainer().setNewDamage(amount);
     }
 
     @SubscribeEvent
@@ -98,7 +105,7 @@ public class ForgeEventHandler {
         LivingEntity living = event.getEntity();
         if (living instanceof Player player) {
             if (EventHandler.shouldDenyMobEffect(player, event.getEffectInstance().getEffect())) {
-                event.setResult(Event.Result.DENY);
+                event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             }
         }
     }
@@ -109,14 +116,13 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onLooting(LootingLevelEvent event) {
-        int bonus = EventHandler.onLooting(event.getDamageSource());
-        event.setLootingLevel(event.getLootingLevel() + bonus);
-    }
-
-    @SubscribeEvent
     public static void onRightClickAir(PlayerInteractEvent.RightClickEmpty event) {
-        EventHandler.onRightClickAir(event.getEntity(), event.getHand());
+        Player player = event.getEntity();
+        if (player.level().isClientSide()
+                && event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND
+                && player.getMainHandItem().isEmpty()) {
+            guivnf.losttrinkets.item.trinkets.MagnetoTrinket.trySendCollect(player);
+        }
     }
 
     @SubscribeEvent
@@ -130,9 +136,7 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getPlayer() != null && !event.getLevel().isClientSide()) {
-            EventHandler.onBreak(event.getPlayer(),
-                    event.getPos(),
-                    event.getState());
+            EventHandler.onBreak(event.getPlayer(), event.getPos(), event.getState());
         }
     }
 
@@ -184,7 +188,6 @@ public class ForgeEventHandler {
         ServerHelper.setServer(null);
     }
 
-    // called from mod event bus
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         event.put(Entities.DARK_VEX.get(), DarkVexEntity.createAttributes().build());
     }

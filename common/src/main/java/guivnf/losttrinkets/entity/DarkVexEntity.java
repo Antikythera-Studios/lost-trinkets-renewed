@@ -1,7 +1,6 @@
 package guivnf.losttrinkets.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -55,9 +54,9 @@ public class DarkVexEntity extends DarkEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VEX_FLAGS, (byte) 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VEX_FLAGS, (byte) 0);
     }
 
     @Override
@@ -130,10 +129,10 @@ public class DarkVexEntity extends DarkEntity {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
-            MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag nbt) {
+            MobSpawnType spawnType, @Nullable SpawnGroupData data) {
         populateDefaultEquipmentSlots(this.random, difficulty);
-        populateDefaultEquipmentEnchantments(this.random, difficulty);
-        return super.finalizeSpawn(level, difficulty, spawnType, data, nbt);
+        populateDefaultEquipmentEnchantments(level, this.random, difficulty);
+        return super.finalizeSpawn(level, difficulty, spawnType, data);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class AvailableTrinketsScreen extends AbstractLTScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mx, my, pt);
         if (this.minecraft.player != null) {
             List<ITrinket> all = LostTrinketsAPI.getTrinkets(this.minecraft.player).getAvailableTrinkets();
             if (all.isEmpty()) {

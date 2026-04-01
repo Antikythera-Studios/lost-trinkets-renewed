@@ -29,9 +29,9 @@ public class TrebleHooksTrinket extends Trinket<TrebleHooksTrinket> {
         if (!LostTrinketsAPI.getTrinkets(player).isActive(Itms.TREBLE_HOOKS.get()))
             return;
 
-        Entity hookedEntity = hook.getHookedIn(); // may be null for normal fishing
+        Entity hookedEntity = hook.getHookedIn();
         ItemStack rod = player.getMainHandItem();
-        LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
+        LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(BuiltInLootTables.FISHING);
 
         for (int i = 0; i < 2; i++) {
             LootParams.Builder builder = new LootParams.Builder(serverLevel)
@@ -40,7 +40,7 @@ public class TrebleHooksTrinket extends Trinket<TrebleHooksTrinket> {
                     .withParameter(LootContextParams.THIS_ENTITY, hook)
                     .withLuck(player.getLuck());
             if (hookedEntity != null) {
-                builder.withParameter(LootContextParams.KILLER_ENTITY, hookedEntity);
+                builder.withParameter(LootContextParams.ATTACKING_ENTITY, hookedEntity);
             }
             List<ItemStack> list = lootTable.getRandomItems(builder.create(LootContextParamSets.FISHING));
             for (ItemStack stack : list) {

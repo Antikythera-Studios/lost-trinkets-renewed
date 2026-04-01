@@ -24,9 +24,9 @@ import java.util.Set;
 
 public class OctopickTrinket extends Trinket<OctopickTrinket> {
     private static final ThreadLocal<ServerPlayer> octoMiningPlayer = new ThreadLocal<>();
-    private static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK, new ResourceLocation("forge", "ores"));
+    private static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("neoforge", "ores"));
     private static final TagKey<Block> FABRIC_ORE_TAG = TagKey.create(Registries.BLOCK,
-            new ResourceLocation("c", "ores"));
+            ResourceLocation.fromNamespaceAndPath("c", "ores"));
 
     public OctopickTrinket(Rarity rarity, Properties properties) {
         super(rarity, properties);
@@ -78,7 +78,7 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
         if (toBreak.size() > 1) {
             toBreak.forEach(breakPos -> {
                 if (breakPos.equals(pos))
-                    return; // skip original block — vanilla handles it
+                    return;
                 BlockState breakState = level.getBlockState(breakPos);
                 if (player.hasCorrectToolForDrops(breakState)) {
                     if (player.gameMode.destroyBlock(breakPos)) {
@@ -100,14 +100,14 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
             ItemStack stack = itemEntity.getItem().copy();
             if (!stack.isEmpty()) {
                 if (!player.getInventory().add(stack)) {
-                    // Inventory full, let the item drop normally at the player's feet
+
                     return false;
                 }
             }
-            return true; // consumed cancel entity join to avoid ghost item on client
+            return true;
         } else if (entity instanceof ExperienceOrb xpOrb) {
             player.giveExperiencePoints(xpOrb.getValue());
-            return true; // consumed, cancel entity join
+            return true;
         }
         return false;
     }

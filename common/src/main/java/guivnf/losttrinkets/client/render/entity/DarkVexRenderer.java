@@ -10,7 +10,7 @@ import guivnf.losttrinkets.client.model.DarkVexModel;
 import guivnf.losttrinkets.entity.DarkVexEntity;
 
 public class DarkVexRenderer extends MobRenderer<DarkVexEntity, DarkVexModel> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(LostTrinkets.MOD_ID,
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID,
             "textures/entity/dark_vex.png");
 
     public DarkVexRenderer(EntityRendererProvider.Context context) {

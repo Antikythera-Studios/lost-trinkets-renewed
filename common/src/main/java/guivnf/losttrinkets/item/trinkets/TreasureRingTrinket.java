@@ -1,6 +1,6 @@
 package guivnf.losttrinkets.item.trinkets;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
@@ -16,14 +16,13 @@ import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.trinket.Rarity;
 import guivnf.losttrinkets.api.trinket.Trinket;
 import guivnf.losttrinkets.item.Itms;
-import guivnf.losttrinkets.util.ServerHelper;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class TreasureRingTrinket extends Trinket<TreasureRingTrinket> {
-    public static final List<ResourceLocation> LOOTS = Arrays.asList(
+    public static final List<ResourceKey<LootTable>> LOOTS = Arrays.asList(
             BuiltInLootTables.NETHER_BRIDGE,
             BuiltInLootTables.JUNGLE_TEMPLE,
             BuiltInLootTables.BURIED_TREASURE,
@@ -51,12 +50,9 @@ public class TreasureRingTrinket extends Trinket<TreasureRingTrinket> {
             return Collections.emptyList();
         if (!(player.level() instanceof ServerLevel serverLevel))
             return Collections.emptyList();
-        var server = ServerHelper.get();
-        if (server == null)
-            return Collections.emptyList();
 
-        ResourceLocation lootTableId = LOOTS.get(serverLevel.random.nextInt(LOOTS.size()));
-        LootTable lootTable = server.getLootData().getLootTable(lootTableId);
+        ResourceKey<LootTable> lootTableId = LOOTS.get(serverLevel.random.nextInt(LOOTS.size()));
+        LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootTableId);
         LootParams params = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.ORIGIN, target.position())
                 .withParameter(LootContextParams.THIS_ENTITY, player)

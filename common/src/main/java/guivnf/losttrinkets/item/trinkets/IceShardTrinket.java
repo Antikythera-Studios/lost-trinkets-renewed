@@ -22,7 +22,7 @@ public class IceShardTrinket extends Trinket<IceShardTrinket> {
             Level level = entity.level();
             if (level.isClientSide)
                 return;
-            // frost walk level 1 - freeze water within 2 blocks
+
             int radius = 2;
             for (BlockPos waterPos : BlockPos.betweenClosed(pos.offset(-radius, -1, -radius),
                     pos.offset(radius, -1, radius))) {

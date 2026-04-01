@@ -1,40 +1,40 @@
 package guivnf.losttrinkets.config;
 
 import com.google.common.collect.Lists;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class LTConfigs {
-        private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+        private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-        private static final ForgeConfigSpec.IntValue START_SLOTS;
-        private static final ForgeConfigSpec.IntValue MAX_SLOTS;
-        private static final ForgeConfigSpec.IntValue SLOT_COST;
-        private static final ForgeConfigSpec.IntValue SLOT_UP_FACTOR;
+        private static final ModConfigSpec.IntValue START_SLOTS;
+        private static final ModConfigSpec.IntValue MAX_SLOTS;
+        private static final ModConfigSpec.IntValue SLOT_COST;
+        private static final ModConfigSpec.IntValue SLOT_UP_FACTOR;
 
-        private static final ForgeConfigSpec.BooleanValue UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.LongValue UNLOCK_COOLDOWN;
-        private static final ForgeConfigSpec.ConfigValue<java.util.List<? extends String>> BLACK_LIST;
-        private static final ForgeConfigSpec.ConfigValue<java.util.List<? extends String>> NON_RANDOM;
+        private static final ModConfigSpec.BooleanValue UNLOCK_ENABLED;
+        private static final ModConfigSpec.LongValue UNLOCK_COOLDOWN;
+        private static final ModConfigSpec.ConfigValue<java.util.List<? extends String>> BLACK_LIST;
+        private static final ModConfigSpec.ConfigValue<java.util.List<? extends String>> NON_RANDOM;
 
-        private static final ForgeConfigSpec.BooleanValue KILLING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue KILLING;
+        private static final ModConfigSpec.BooleanValue KILLING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue KILLING;
 
-        private static final ForgeConfigSpec.BooleanValue BOSS_KILLING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue BOSS_KILLING;
+        private static final ModConfigSpec.BooleanValue BOSS_KILLING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue BOSS_KILLING;
 
-        private static final ForgeConfigSpec.BooleanValue FARMING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue FARMING;
+        private static final ModConfigSpec.BooleanValue FARMING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue FARMING;
 
-        private static final ForgeConfigSpec.BooleanValue ORES_MINING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue ORES_MINING;
+        private static final ModConfigSpec.BooleanValue ORES_MINING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue ORES_MINING;
 
-        private static final ForgeConfigSpec.BooleanValue TRADING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue TRADING;
+        private static final ModConfigSpec.BooleanValue TRADING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue TRADING;
 
-        private static final ForgeConfigSpec.BooleanValue WOOD_CUTTING_UNLOCK_ENABLED;
-        private static final ForgeConfigSpec.IntValue WOOD_CUTTING;
+        private static final ModConfigSpec.BooleanValue WOOD_CUTTING_UNLOCK_ENABLED;
+        private static final ModConfigSpec.IntValue WOOD_CUTTING;
 
-        public static final ForgeConfigSpec SPEC;
+        public static final ModConfigSpec SPEC;
 
         static {
                 BUILDER.push("Trinket_Slots");

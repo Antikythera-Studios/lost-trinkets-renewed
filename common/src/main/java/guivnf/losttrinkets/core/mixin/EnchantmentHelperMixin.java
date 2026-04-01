@@ -16,7 +16,7 @@ public class EnchantmentHelperMixin {
     @Inject(method = "getMobLooting", at = @At("RETURN"), cancellable = true)
     private static void losttrinkets$lootingBonus(LivingEntity entity,
             CallbackInfoReturnable<Integer> cir) {
-        if (dev.architectury.platform.Platform.isForge())
+        if (dev.architectury.platform.Platform.isNeoForge())
             return;
         if (!(entity instanceof Player player))
             return;

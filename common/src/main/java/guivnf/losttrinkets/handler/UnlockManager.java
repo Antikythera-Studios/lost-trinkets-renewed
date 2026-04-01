@@ -110,10 +110,10 @@ public class UnlockManager {
         init();
 
         Set<ResourceLocation> banned = Configs.GENERAL.blackList.stream()
-                .map(ResourceLocation::new)
+                .map(ResourceLocation::parse)
                 .collect(Collectors.toCollection(Sets::newLinkedHashSet));
         Set<ResourceLocation> nonRandom = Configs.GENERAL.nonRandom.stream()
-                .map(ResourceLocation::new)
+                .map(ResourceLocation::parse)
                 .collect(Collectors.toCollection(Sets::newLinkedHashSet));
         Set<ResourceLocation> seen = Sets.newLinkedHashSet();
 

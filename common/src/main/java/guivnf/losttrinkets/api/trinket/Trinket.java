@@ -3,7 +3,9 @@ package guivnf.losttrinkets.api.trinket;
 import com.google.common.collect.Maps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -14,18 +16,17 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.client.util.MC;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
 
-    private final Map<Attribute, AttributeModifier> attributes = Maps.newHashMap();
+    private final Map<Holder<Attribute>, AttributeModifier> attributes = Maps.newHashMap();
     private final Rarity rarity;
     protected boolean unlockable = true;
 
@@ -47,7 +48,7 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (LostTrinketsAPI.get().isDisabled(this)) {
             tooltip.add(Component.translatable("gui.losttrinkets.status.disabled").withStyle(ChatFormatting.DARK_RED));
         } else {
@@ -94,18 +95,20 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
     }
 
     @SuppressWarnings("unchecked")
-    public T add(Attribute attribute, String uuid, double amount) {
-        AttributeModifier modifier = new AttributeModifier(UUID.fromString(uuid), "Attribute", amount, AttributeModifier.Operation.ADDITION);
+    public T add(Holder<Attribute> attribute, String uuid, double amount) {
+        AttributeModifier modifier = new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, uuid),
+                amount, AttributeModifier.Operation.ADD_VALUE);
         getAttributes().put(attribute, modifier);
         return (T) this;
     }
 
     public void applyAttributes(Player player) {
-        for (Map.Entry<Attribute, AttributeModifier> entry : getAttributes().entrySet()) {
+        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : getAttributes().entrySet()) {
             AttributeInstance attribute = player.getAttribute(entry.getKey());
             if (attribute != null) {
                 AttributeModifier modifier = entry.getValue();
-                if (!attribute.hasModifier(modifier)) {
+                if (!attribute.hasModifier(modifier.id())) {
                     attribute.addPermanentModifier(modifier);
                 }
             }
@@ -113,7 +116,7 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
     }
 
     public void removeAttributes(Player player) {
-        for (Map.Entry<Attribute, AttributeModifier> entry : getAttributes().entrySet()) {
+        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : getAttributes().entrySet()) {
             AttributeInstance attribute = player.getAttribute(entry.getKey());
             if (attribute != null) {
                 attribute.removeModifier(entry.getValue());
@@ -121,7 +124,7 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
         }
     }
 
-    public Map<Attribute, AttributeModifier> getAttributes() {
+    public Map<Holder<Attribute>, AttributeModifier> getAttributes() {
         return this.attributes;
     }
 

@@ -30,7 +30,7 @@ public abstract class PigEntityMixin extends Animal {
         if (player.isSecondaryUseActive() || self.isVehicle())
             return;
         ItemStack held = player.getItemInHand(hand);
-        // let vanilla handle saddle equipping and food interactions
+
         if (held.is(Items.SADDLE) || self.isFood(held))
             return;
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.PIGGY.get())) {
@@ -44,7 +44,7 @@ public abstract class PigEntityMixin extends Animal {
     @Inject(method = "getControllingPassenger", at = @At("RETURN"), cancellable = true)
     private void losttrinkets$modifyControllingPassenger(CallbackInfoReturnable<Entity> cir) {
         if (cir.getReturnValue() != null)
-            return; // already has a controller
+            return;
         Entity first = this.getFirstPassenger();
         if (first instanceof Player player) {
             if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.PIGGY.get())) {

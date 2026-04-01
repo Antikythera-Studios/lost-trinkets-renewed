@@ -1,6 +1,7 @@
 package guivnf.losttrinkets.item.trinkets;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -16,7 +17,7 @@ public class OxalisTrinket extends Trinket<OxalisTrinket> {
         super(rarity, properties);
     }
 
-    public static boolean shouldDenyEffect(Player player, MobEffect effect) {
+    public static boolean shouldDenyEffect(Player player, Holder<MobEffect> effect) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (trinkets.isActive(Itms.OXALIS.get())) {
             return effect == MobEffects.BAD_OMEN || effect == MobEffects.UNLUCK;

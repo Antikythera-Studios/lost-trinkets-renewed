@@ -1,16 +1,16 @@
-package guivnf.losttrinkets.forge.mixin;
+package guivnf.losttrinkets.neoforge.mixin;
 
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.extensions.IForgeItemStack;
+import net.neoforged.neoforge.common.extensions.IItemStackExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.trinket.Trinkets;
 import guivnf.losttrinkets.item.Itms;
 
 @Mixin(ItemStack.class)
-public abstract class ForgeItemStackMixin implements IForgeItemStack {
+public abstract class NeoForgeItemStackMixin implements IItemStackExtension {
 
     @Override
     public boolean isEnderMask(Player player, EnderMan endermanEntity) {

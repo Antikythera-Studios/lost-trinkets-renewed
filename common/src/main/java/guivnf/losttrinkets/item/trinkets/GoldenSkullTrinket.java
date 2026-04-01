@@ -9,7 +9,6 @@ import guivnf.losttrinkets.api.trinket.Rarity;
 import guivnf.losttrinkets.api.trinket.Trinket;
 import guivnf.losttrinkets.item.Itms;
 
-
 public class GoldenSkullTrinket extends Trinket<GoldenSkullTrinket> {
     public GoldenSkullTrinket(Rarity rarity, Properties properties) {
         super(rarity, properties);

@@ -2,7 +2,7 @@ package guivnf.losttrinkets.network;
 
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,11 +21,11 @@ public class LTNetwork {
     }
 
     public ResourceLocation id(String path) {
-        return new ResourceLocation(modId, path);
+        return ResourceLocation.fromNamespaceAndPath(modId, path);
     }
 
     public <T> void registerS2C(ResourceLocation id,
-            Function<FriendlyByteBuf, T> decoder,
+            Function<RegistryFriendlyByteBuf, T> decoder,
             BiConsumer<T, NetworkManager.PacketContext> handler) {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, id, (buf, context) -> {
             T packet = decoder.apply(buf);
@@ -34,7 +34,7 @@ public class LTNetwork {
     }
 
     public <T> void registerC2S(ResourceLocation id,
-            Function<FriendlyByteBuf, T> decoder,
+            Function<RegistryFriendlyByteBuf, T> decoder,
             BiConsumer<T, NetworkManager.PacketContext> handler) {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, id, (buf, context) -> {
             T packet = decoder.apply(buf);
@@ -42,13 +42,13 @@ public class LTNetwork {
         });
     }
 
-    private static FriendlyByteBuf makeBuf(Consumer<FriendlyByteBuf> writer) {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+    private static RegistryFriendlyByteBuf makeBuf(Consumer<RegistryFriendlyByteBuf> writer) {
+        RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), null);
         writer.accept(buf);
         return buf;
     }
 
-    public void toServer(ResourceLocation id, Consumer<FriendlyByteBuf> writer) {
+    public void toServer(ResourceLocation id, Consumer<RegistryFriendlyByteBuf> writer) {
         NetworkManager.sendToServer(id, makeBuf(writer));
     }
 
@@ -56,7 +56,7 @@ public class LTNetwork {
         NetworkManager.sendToServer(packet.getId(), makeBuf(packet::write));
     }
 
-    public void toClient(ResourceLocation id, Consumer<FriendlyByteBuf> writer, Player player) {
+    public void toClient(ResourceLocation id, Consumer<RegistryFriendlyByteBuf> writer, Player player) {
         if (player instanceof ServerPlayer sp) {
             NetworkManager.sendToPlayer(sp, id, makeBuf(writer));
         }

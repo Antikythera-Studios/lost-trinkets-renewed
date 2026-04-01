@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
@@ -13,7 +13,7 @@ import guivnf.losttrinkets.network.LTPacket;
 import java.util.List;
 
 public class SetActivePacket implements LTPacket {
-    public static final ResourceLocation ID = new ResourceLocation(LostTrinkets.MOD_ID, "set_active");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "set_active");
 
     private final int trinket;
 
@@ -27,11 +27,11 @@ public class SetActivePacket implements LTPacket {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
+    public void write(RegistryFriendlyByteBuf buf) {
         buf.writeInt(trinket);
     }
 
-    public static SetActivePacket decode(FriendlyByteBuf buf) {
+    public static SetActivePacket decode(RegistryFriendlyByteBuf buf) {
         return new SetActivePacket(buf.readInt());
     }
 

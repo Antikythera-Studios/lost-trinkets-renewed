@@ -36,7 +36,7 @@ public class DarkEggTrinket extends Trinket<DarkEggTrinket> {
                             if (vex != null) {
                                 vex.finalizeSpawn(serverLevel,
                                         serverLevel.getCurrentDifficultyAt(player.blockPosition()),
-                                        MobSpawnType.MOB_SUMMONED, null, null);
+                                        MobSpawnType.MOB_SUMMONED, null);
                                 vex.setTarget(living);
                                 vex.setOwner(player);
                                 vex.setBoundOrigin(player.blockPosition());
