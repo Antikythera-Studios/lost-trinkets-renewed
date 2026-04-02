@@ -21,3 +21,11 @@ This is the 1.20+ port of Lost Trinkets, originally made by owmii for Forge 1.16
 
 ***
 
+<div align="center">
+  <a href="https://www.patreon.com/bePatron?u=53051224"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/patreon.svg" alt="Patreon" width="100" height="100" /></a>
+  <a href="https://discord.com/invite/NbAJwj8RHg"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/discord.svg" alt="Discord" width="100" height="100" /></a>
+  <a href="https://www.youtube.com/@yesman4100"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/youtube.svg" alt="YouTube" width="100" height="100" /></a>
+  <a href="https://github.com/guivnf/Lost-Trinkets"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/github.svg" alt="GitHub" width="100" height="100" /></a>
+  <a href="https://www.curseforge.com/minecraft/mc-mods/lost-trinkets-renewed"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/curseforge.svg" alt="CurseForge" width="100" height="100" /></a>
+  <a href="https://modrinth.com/mod/lost-trinkets-renewed"><img src="https://raw.githubusercontent.com/Epic-Fight/EpicFight-Files/Wiki-Images/Icons/SVG/modrinth.svg" alt="Modrinth" width="100" height="100" /></a>
+</div>
