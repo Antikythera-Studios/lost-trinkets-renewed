@@ -1,5 +1,8 @@
 package guivnf.losttrinkets.core.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import guivnf.losttrinkets.handler.EventHandler;
+import guivnf.losttrinkets.item.trinkets.ThaSpiderTrinket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import guivnf.losttrinkets.handler.EventHandler;
 
 import java.util.List;
 
@@ -61,5 +63,13 @@ public class LivingEntityMixin {
             serverLevel.addFreshEntity(
                     new ItemEntity(serverLevel, self.getX(), self.getY(), self.getZ(), stack));
         }
+    }
+
+    @ModifyReturnValue(method = "onClimbable", at = @At("RETURN"))
+    private boolean losttrinkets$thaSpiderTrinket(boolean original) {
+        if (!original) {
+            return (Object) this instanceof Player player && ThaSpiderTrinket.doClimb(player);
+        }
+        return true;
     }
 }

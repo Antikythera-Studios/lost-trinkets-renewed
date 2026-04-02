@@ -1,8 +1,12 @@
 package guivnf.losttrinkets.core.mixin;
 
+import guivnf.losttrinkets.LostTrinkets;
+import guivnf.losttrinkets.api.LostTrinketsAPI;
+import guivnf.losttrinkets.api.trinket.Trinkets;
+import guivnf.losttrinkets.handler.EventHandler;
+import guivnf.losttrinkets.item.Itms;
+import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -16,29 +20,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import guivnf.losttrinkets.LostTrinkets;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.api.trinket.Trinkets;
-import guivnf.losttrinkets.handler.EventHandler;
-import guivnf.losttrinkets.item.Itms;
-import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
-import guivnf.losttrinkets.item.trinkets.ThaSpiderTrinket;
 
 @Mixin(Player.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin {
     private static final ResourceLocation HORSESHOE_STEP_ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "horseshoe_step_height");
-
-    protected PlayerEntityMixin(EntityType<? extends LivingEntity> type, Level level) {
-        super(type, level);
-    }
-
-    @Override
-    public boolean onClimbable() {
-        if (!super.onClimbable()) {
-            return ThaSpiderTrinket.doClimb((Player) (Object) this);
-        }
-        return true;
-    }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void losttrinkets$updateStepHeight(CallbackInfo ci) {
