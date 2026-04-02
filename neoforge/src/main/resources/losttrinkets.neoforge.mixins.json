@@ -5,6 +5,5 @@
   "mixins": [
     "NeoForgeItemStackMixin"
   ],
-  "minVersion": "0.8",
-  "refmap": "losttrinkets.neoforge.refmap.json"
+  "minVersion": "0.8"
 }

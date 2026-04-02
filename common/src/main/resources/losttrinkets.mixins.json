@@ -24,6 +24,5 @@
     "ClientEntityMixin",
     "ClientLivingEntityRendererMixin"
   ],
-  "minVersion": "0.8",
-  "refmap": "losttrinkets.refmap.json"
+  "minVersion": "0.8"
 }
