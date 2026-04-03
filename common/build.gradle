@@ -2,12 +2,6 @@ architectury {
     common("forge", "fabric")
 }
 
-loom {
-    mixin {
-        defaultRefmapName = "${project.mod_id}.refmap.json"
-    }
-}
-
 dependencies {
     modImplementation "dev.architectury:architectury:${project.architectury_version}"
 

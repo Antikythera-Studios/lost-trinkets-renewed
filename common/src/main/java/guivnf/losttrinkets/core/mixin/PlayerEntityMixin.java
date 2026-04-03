@@ -1,7 +1,10 @@
 package guivnf.losttrinkets.core.mixin;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import guivnf.losttrinkets.api.LostTrinketsAPI;
+import guivnf.losttrinkets.api.trinket.Trinkets;
+import guivnf.losttrinkets.handler.EventHandler;
+import guivnf.losttrinkets.item.Itms;
+import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -12,27 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.api.trinket.Trinkets;
-import guivnf.losttrinkets.handler.EventHandler;
-import guivnf.losttrinkets.item.Itms;
-import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
-import guivnf.losttrinkets.item.trinkets.ThaSpiderTrinket;
 
 @Mixin(Player.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
-    protected PlayerEntityMixin(EntityType<? extends LivingEntity> type, Level level) {
-        super(type, level);
-    }
-
-    @Override
-    public boolean onClimbable() {
-        if (!super.onClimbable()) {
-            return ThaSpiderTrinket.doClimb((Player) (Object) this);
-        }
-        return true;
-    }
-
+public abstract class PlayerEntityMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void losttrinkets$updateStepHeight(CallbackInfo ci) {
         Player self = (Player) (Object) this;
