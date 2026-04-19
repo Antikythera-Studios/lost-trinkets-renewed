@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 20.1.2 - 2026-04-19
+
+### Fixed
+  - Dedicated server issue
+  - Magneto unbound key fix on dedicated server
+
 ## 20.1.1 - 2026-04-19
 
 ### Fixed
