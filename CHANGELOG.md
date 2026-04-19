@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 21.1.1 - 2026-04-19
+
+### Fixed
+  - Neoforge Crash
+  - Trinkets & probably some other mods. Thanks to unilock PR #1
+
 ## 21.1.0 - 2026-04-1
 
 ### Added
