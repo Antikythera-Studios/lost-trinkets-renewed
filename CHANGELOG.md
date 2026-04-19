@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 21.1.2 - 2026-04-19
+
+### Fixed
+  - Dedicated server crash
+  - other mixin issues with Artifacts
+
 ## 21.1.1 - 2026-04-19
 
 ### Fixed
