@@ -13,6 +13,7 @@ import guivnf.losttrinkets.client.screen.Screens;
 public class LostTrinketsFabricClientMod implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        guivnf.losttrinkets.client.network.ClientPacketHandlers.registerAll();
         ResourceManagerHelper.registerBuiltinResourcePack(
                 ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "legacy"),
                 FabricLoader.getInstance().getModContainer(LostTrinkets.MOD_ID).orElseThrow(),

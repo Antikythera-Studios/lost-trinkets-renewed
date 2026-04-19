@@ -1,15 +1,12 @@
 package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.client.screen.Screens;
-import guivnf.losttrinkets.client.util.MC;
 import guivnf.losttrinkets.network.LTPacket;
 
 import java.util.Objects;
@@ -30,6 +27,9 @@ public class SyncDataPacket implements LTPacket {
         this(player.getUUID(), LostTrinketsAPI.getData(player).serializeNBT());
     }
 
+    public UUID getUuid() { return uuid; }
+    public CompoundTag getNbt() { return nbt; }
+
     @Override
     public ResourceLocation getId() {
         return ID;
@@ -45,24 +45,7 @@ public class SyncDataPacket implements LTPacket {
         return new SyncDataPacket(buf.readUUID(), Objects.requireNonNull(buf.readNbt()));
     }
 
-    public static void handle(SyncDataPacket msg, NetworkManager.PacketContext ctx) {
-        Minecraft mc = Minecraft.getInstance();
-
-        if (mc.player != null && mc.player.getUUID().equals(msg.uuid)) {
-            LostTrinketsAPI.getData(mc.player).deserializeNBT(msg.nbt);
-            Screens.checkScreenRefresh();
-            return;
-        }
-
-        MC.world().ifPresent(world -> {
-            Player player = world.getPlayerByUUID(msg.uuid);
-            if (player != null) {
-                LostTrinketsAPI.getData(player).deserializeNBT(msg.nbt);
-            }
-        });
-    }
-
-    public static void register() {
-        LostTrinkets.NET.registerS2C(ID, SyncDataPacket::decode, SyncDataPacket::handle);
+    public static void register(java.util.function.BiConsumer<SyncDataPacket, NetworkManager.PacketContext> handler) {
+        LostTrinkets.NET.registerS2C(ID, SyncDataPacket::decode, handler);
     }
 }

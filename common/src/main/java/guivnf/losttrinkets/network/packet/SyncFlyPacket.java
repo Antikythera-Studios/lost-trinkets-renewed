@@ -4,10 +4,9 @@ import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import guivnf.losttrinkets.LostTrinkets;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.api.player.PlayerData;
-import guivnf.losttrinkets.client.util.MC;
 import guivnf.losttrinkets.network.LTPacket;
+
+import java.util.function.BiConsumer;
 
 public class SyncFlyPacket implements LTPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_fly");
@@ -17,6 +16,8 @@ public class SyncFlyPacket implements LTPacket {
     public SyncFlyPacket(boolean fly) {
         this.fly = fly;
     }
+
+    public boolean isFly() { return fly; }
 
     @Override
     public ResourceLocation getId() {
@@ -32,18 +33,7 @@ public class SyncFlyPacket implements LTPacket {
         return new SyncFlyPacket(buf.readBoolean());
     }
 
-    public static void handle(SyncFlyPacket msg, NetworkManager.PacketContext ctx) {
-        MC.player().ifPresent(player -> {
-            PlayerData data = LostTrinketsAPI.getData(player);
-            data.allowFlying = msg.fly;
-            player.getAbilities().mayfly = msg.fly;
-            if (!msg.fly) {
-                player.getAbilities().flying = false;
-            }
-        });
-    }
-
-    public static void register() {
-        LostTrinkets.NET.registerS2C(ID, SyncFlyPacket::decode, SyncFlyPacket::handle);
+    public static void register(BiConsumer<SyncFlyPacket, NetworkManager.PacketContext> handler) {
+        LostTrinkets.NET.registerS2C(ID, SyncFlyPacket::decode, handler);
     }
 }

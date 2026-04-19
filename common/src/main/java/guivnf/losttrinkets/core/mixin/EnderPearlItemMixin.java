@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(EnderpearlItem.class)
+@Mixin(value = EnderpearlItem.class, priority = 500)
 public abstract class EnderPearlItemMixin {
     @WrapWithCondition(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;consume(ILnet/minecraft/world/entity/LivingEntity;)V"))
     private boolean losttrinkets$emptyAmulet(ItemStack instance, int i, LivingEntity livingEntity, @Local(argsOnly = true) Player player) {

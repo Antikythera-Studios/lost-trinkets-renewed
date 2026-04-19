@@ -7,6 +7,14 @@ architectury {
     fabric()
 }
 
+loom {
+    runs {
+        server {
+            programArgs.remove("nogui")
+        }
+    }
+}
+
 configurations {
     common {
         canBeResolved = true
