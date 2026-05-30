@@ -1,0 +1,133 @@
+// ===================================================================================================
+// Unified multi-platform publishing for Lost Trinkets, powered by the mod-publish-plugin:
+//   https://github.com/modmuss50/mod-publish-plugin
+//
+// Mirrors the Epic Fight publishing setup: the changelog is pulled straight out of CHANGELOG.md for the
+// current version, a "Tested against:" footer is appended, and the Forge + Fabric jars are pushed to
+// Modrinth and CurseForge in one go, followed by a single Discord release announcement.
+//
+// This block lives in the *root* project (the plugin's recommended pattern for multi-loader builds), so
+// `./gradlew publishMods` publishes every loader/platform combination with one command.
+//
+// Required environment variables when publishing for real:
+//   LOST_TRINKETS_MODRINTH_API     - Modrinth personal access token (needs the "Create versions" scope)
+//   LOST_TRINKETS_CURSEFORGE_API   - CurseForge API token
+//   LOST_TRINKETS_DISCORD_WEBHOOK  - Discord webhook URL for the release announcement (optional)
+//   DRY_RUN_DISCORD_WEBHOOK        - Discord webhook used during dry runs (optional)
+//
+// Handy flags:
+//   ./gradlew publishMods                       publish to every configured destination
+//   ./gradlew publishMods -PpublishDryRun=true  build + validate everything without uploading anything
+// ===================================================================================================
+
+// --- Changelog extraction -------------------------------------------------------------------------
+
+// Pulls the section for the current mod_version out of CHANGELOG.md.
+// Heading format: "## <version> - <yyyy-mm-dd>", captured up to the next "## " heading (or EOF).
+def extractCurrentChangelog = {
+    def changelogFile = rootProject.file("CHANGELOG.md")
+    if (!changelogFile.exists()) return null
+    def text = changelogFile.getText("UTF-8")
+    def matcher = text =~ /(?s)##\s+\Q${mod_version}\E\s+-\s+\d{4}-\d{2}-\d{2}\s*?\R(.*?)(?=\R##\s|\z)/
+    return matcher.find() ? matcher.group(1).trim() : null
+}
+
+def currentChangelog = extractCurrentChangelog()
+def releaseChangelog = currentChangelog == null ? null : """${currentChangelog}
+
+### **Tested against:**
+- **Minecraft:** ${mc_version}
+- **Forge:** ${forge_version}
+- **Fabric Loader:** ${fabric_loader_version}""".toString()
+
+if (releaseChangelog == null) {
+    logger.warn("[publishing] No changelog entry found for version ${mod_version} in CHANGELOG.md; " +
+            "the publishMods task will refuse to run until one is added.")
+}
+
+// Refuse to publish a version that has no matching changelog entry.
+gradle.taskGraph.whenReady { graph ->
+    boolean publishing = graph.allTasks.any {
+        it.name == "publishMods" || it.name.startsWith("publishCurseforge") ||
+        it.name.startsWith("publishModrinth") || it.name.startsWith("publishDiscord")
+    }
+    if (publishing && extractCurrentChangelog() == null) {
+        throw new GradleException("Cannot publish: no changelog entry found for version ${mod_version} in CHANGELOG.md")
+    }
+}
+
+// --- Publishing configuration ---------------------------------------------------------------------
+
+publishMods {
+    dryRun = providers.gradleProperty("publishDryRun").map { Boolean.parseBoolean(it) }.getOrElse(false)
+    type = STABLE
+    if (releaseChangelog != null) {
+        changelog = releaseChangelog
+    }
+
+    // Shared CurseForge options (token / project / supported MC versions) reused by each loader upload.
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("LOST_TRINKETS_CURSEFORGE_API")
+        projectId = curseforge_id
+        projectSlug = curseforge_slug
+        minecraftVersions.add(mc_version)
+    }
+
+    // Shared Modrinth options.
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("LOST_TRINKETS_MODRINTH_API")
+        projectId = modrinth_id
+        minecraftVersions.add(mc_version)
+    }
+
+    // --- CurseForge ---
+    curseforge("curseforgeForge") {
+        from cfOptions
+        file project(":forge")
+        modLoaders.add("forge")
+        displayName = "${mod_name} ${mod_version} - Forge ${mc_version}"
+        version = "${mod_version}-mc${mc_version}-forge"
+    }
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        displayName = "${mod_name} ${mod_version} - Fabric ${mc_version}"
+        version = "${mod_version}-mc${mc_version}-fabric"
+    }
+
+    // --- Modrinth ---
+    modrinth("modrinthForge") {
+        from mrOptions
+        file project(":forge")
+        modLoaders.add("forge")
+        displayName = "${mod_name} ${mod_version} - Forge ${mc_version}"
+        version = "${mod_version}-mc${mc_version}-forge"
+    }
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        displayName = "${mod_name} ${mod_version} - Fabric ${mc_version}"
+        version = "${mod_version}-mc${mc_version}-fabric"
+    }
+
+    // --- Discord (single announcement covering every upload above) ---
+    // Only wired up when a webhook is actually configured, so local/CI builds without the secret
+    // (and dry runs) don't fail on a missing webhook URL.
+    def discordWebhook = providers.environmentVariable("LOST_TRINKETS_DISCORD_WEBHOOK")
+    if (discordWebhook.isPresent()) {
+        discord {
+            webhookUrl = discordWebhook
+            dryRunWebhookUrl = providers.environmentVariable("DRY_RUN_DISCORD_WEBHOOK")
+            username = "Update Notification"
+            // avatarUrl = "https://<url-to-mod-icon>.png"        // optional
+            content = changelog.map { "# ${mod_name} ${mod_version} is out!\n\n" + it }
+            style {
+                look = "MODERN"
+                link = "EMBED"
+                // thumbnailUrl = "https://<url-to-thumbnail>.png" // optional
+            }
+        }
+    }
+}

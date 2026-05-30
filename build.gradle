@@ -2,6 +2,7 @@ plugins {
     id "architectury-plugin" version "${architectury_plugin_version}"
     id "dev.architectury.loom" version "${architectury_loom_version}" apply false
     id "com.github.johnrengelman.shadow" version "8.1.1" apply false
+    id "me.modmuss50.mod-publish-plugin" version "${mod_publish_version}"
 }
 
 architectury {
@@ -58,3 +59,6 @@ subprojects {
         }
     }
 }
+
+// Unified multi-platform publishing (Modrinth + CurseForge + Discord) via mod-publish-plugin.
+apply from: "$rootDir/gradle/publishing.gradle"
