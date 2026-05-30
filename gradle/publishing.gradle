@@ -126,7 +126,7 @@ publishMods {
             style {
                 look = "MODERN"
                 link = "EMBED"
-                // thumbnailUrl = "https://<url-to-thumbnail>.png" // optional
+                thumbnailUrl = "https://raw.githubusercontent.com/Antikythera-Studios/lost-trinkets-renewed/refs/heads/1.20.1/Small_Icon_LT.png" // optional
             }
         }
     }
