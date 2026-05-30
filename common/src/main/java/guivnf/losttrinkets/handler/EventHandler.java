@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -14,10 +15,20 @@ import guivnf.losttrinkets.api.trinket.Trinkets;
 import guivnf.losttrinkets.item.Itms;
 import guivnf.losttrinkets.item.trinkets.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class EventHandler {
+
+    private static final Object NONE = new Object();
+    private static final ConcurrentMap<Class<?>, Object> STATS_FIELD_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, Object> MAX_STATS_CACHE = new ConcurrentHashMap<>();
 
     public static void tick(Player player) {
         UnlockHandler.tick(player);
@@ -28,6 +39,72 @@ public class EventHandler {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         IceShardTrinket.frostWalk(player, player.blockPosition());
         trinkets.getTickable().forEach(trinket -> trinket.tick(player.level(), player.blockPosition(), player));
+    }
+
+    /**
+     * Attempts to swap a modded enchanting menu's {@code EnchantmentTableStats} record for one with
+     * maxed-out values, so that Book O' Enchanting grants the equivalent of a fully-equipped setup
+     * (e.g. Apothic Enchanting) instead of capping at the vanilla level 30. Returns {@code true} when
+     * a modded stats record was found and applied, in which case the caller should target level 100.
+     */
+    public static boolean applyMaxEnchantingStatsIfPresent(EnchantmentMenu em) {
+        Class<?> menuClass = em.getClass();
+        if (menuClass == EnchantmentMenu.class) return false;
+        Object statsFieldCached = STATS_FIELD_CACHE.computeIfAbsent(menuClass, EventHandler::findEnchantingStatsField);
+        if (statsFieldCached == NONE) return false;
+        Field statsField = (Field) statsFieldCached;
+        Object maxStatsCached = MAX_STATS_CACHE.computeIfAbsent(statsField.getType(), EventHandler::buildMaxEnchantingStats);
+        if (maxStatsCached == NONE) return false;
+        try {
+            if (statsField.get(em) != maxStatsCached) {
+                statsField.set(em, maxStatsCached);
+            }
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    private static Object findEnchantingStatsField(Class<?> menuClass) {
+        for (Class<?> k = menuClass; k != null && k != EnchantmentMenu.class && k != Object.class; k = k.getSuperclass()) {
+            for (Field f : k.getDeclaredFields()) {
+                Class<?> ft = f.getType();
+                if ("stats".equals(f.getName())
+                        && ft.isRecord()
+                        && "EnchantmentTableStats".equals(ft.getSimpleName())) {
+                    try {
+                        f.setAccessible(true);
+                        return f;
+                    } catch (Throwable ignored) {
+                        return NONE;
+                    }
+                }
+            }
+        }
+        return NONE;
+    }
+
+    private static Object buildMaxEnchantingStats(Class<?> statsClass) {
+        try {
+            RecordComponent[] components = statsClass.getRecordComponents();
+            Class<?>[] paramTypes = new Class<?>[components.length];
+            Object[] args = new Object[components.length];
+            for (int i = 0; i < components.length; i++) {
+                paramTypes[i] = components[i].getType();
+                args[i] = maxValueFor(components[i].getType());
+            }
+            return statsClass.getDeclaredConstructor(paramTypes).newInstance(args);
+        } catch (Throwable ignored) {
+            return NONE;
+        }
+    }
+
+    private static Object maxValueFor(Class<?> t) {
+        if (t == float.class) return Float.MAX_VALUE;
+        if (t == int.class) return Integer.MAX_VALUE;
+        if (t == boolean.class) return true;
+        if (Set.class.isAssignableFrom(t)) return Collections.emptySet();
+        return null;
     }
 
     public static void onLivingUpdate(LivingEntity entity) {

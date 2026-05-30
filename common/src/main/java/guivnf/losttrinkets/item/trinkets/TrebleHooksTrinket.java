@@ -1,7 +1,6 @@
 package guivnf.losttrinkets.item.trinkets;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
@@ -29,7 +28,6 @@ public class TrebleHooksTrinket extends Trinket<TrebleHooksTrinket> {
         if (!LostTrinketsAPI.getTrinkets(player).isActive(Itms.TREBLE_HOOKS.get()))
             return;
 
-        Entity hookedEntity = hook.getHookedIn(); // may be null for normal fishing
         ItemStack rod = player.getMainHandItem();
         LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
 
@@ -39,9 +37,6 @@ public class TrebleHooksTrinket extends Trinket<TrebleHooksTrinket> {
                     .withParameter(LootContextParams.TOOL, rod)
                     .withParameter(LootContextParams.THIS_ENTITY, hook)
                     .withLuck(player.getLuck());
-            if (hookedEntity != null) {
-                builder.withParameter(LootContextParams.KILLER_ENTITY, hookedEntity);
-            }
             List<ItemStack> list = lootTable.getRandomItems(builder.create(LootContextParamSets.FISHING));
             for (ItemStack stack : list) {
                 ItemEntity itemEntity = new ItemEntity(serverLevel,

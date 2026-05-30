@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
+import guivnf.losttrinkets.handler.EventHandler;
 import guivnf.losttrinkets.item.Itms;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,9 +32,11 @@ public class EnchantmentContainerMixin {
     @Inject(method = "slotsChanged", at = @At("TAIL"))
     private void ltSlotsChanged(Container container, CallbackInfo ci) {
         if (ltPlayer != null && LostTrinketsAPI.getTrinkets(ltPlayer).isActive(Itms.BOOK_O_ENCHANTING.get())) {
+            EnchantmentMenu em = (EnchantmentMenu) (Object) this;
+            int target = EventHandler.applyMaxEnchantingStatsIfPresent(em) ? 100 : 30;
             for (int i = 0; i < costs.length; i++) {
-                if (costs[i] > 0)
-                    costs[i] = 30;
+                if (costs[i] > 0 && costs[i] < target)
+                    costs[i] = target;
             }
         }
     }

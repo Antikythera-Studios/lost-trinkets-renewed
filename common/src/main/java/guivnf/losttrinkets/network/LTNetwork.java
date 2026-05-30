@@ -49,10 +49,12 @@ public class LTNetwork {
     }
 
     public void toServer(ResourceLocation id, Consumer<FriendlyByteBuf> writer) {
+        if (!NetworkManager.canServerReceive(id)) return;
         NetworkManager.sendToServer(id, makeBuf(writer));
     }
 
     public void toServer(LTPacket packet) {
+        if (!NetworkManager.canServerReceive(packet.getId())) return;
         NetworkManager.sendToServer(packet.getId(), makeBuf(packet::write));
     }
 

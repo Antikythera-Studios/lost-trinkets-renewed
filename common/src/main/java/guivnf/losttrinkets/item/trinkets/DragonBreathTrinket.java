@@ -37,6 +37,7 @@ public class DragonBreathTrinket extends Trinket<DragonBreathTrinket> {
                     if (recipe.isPresent()) {
                         ItemStack output = recipe.get().getResultItem(player.level().registryAccess()).copy();
                         if (!output.isEmpty()) {
+                            output.setCount(output.getCount() * in.getCount());
                             smelted.add(output);
                             itr.remove();
                         }
