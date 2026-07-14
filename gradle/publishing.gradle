@@ -87,6 +87,7 @@ publishMods {
         modLoaders.add("forge")
         displayName = "${mod_name} ${mod_version} - Forge ${mc_version}"
         version = "${mod_version}-mc${mc_version}-forge"
+        announcementTitle = "Download from CurseForge (forge)"
     }
     curseforge("curseforgeFabric") {
         from cfOptions
@@ -94,6 +95,7 @@ publishMods {
         modLoaders.add("fabric")
         displayName = "${mod_name} ${mod_version} - Fabric ${mc_version}"
         version = "${mod_version}-mc${mc_version}-fabric"
+        announcementTitle = "Download from CurseForge (fabric)"
     }
 
     // --- Modrinth ---
@@ -103,6 +105,7 @@ publishMods {
         modLoaders.add("forge")
         displayName = "${mod_name} ${mod_version} - Forge ${mc_version}"
         version = "${mod_version}-mc${mc_version}-forge"
+        announcementTitle = "Download from Modrinth (forge)"
     }
     modrinth("modrinthFabric") {
         from mrOptions
@@ -110,6 +113,7 @@ publishMods {
         modLoaders.add("fabric")
         displayName = "${mod_name} ${mod_version} - Fabric ${mc_version}"
         version = "${mod_version}-mc${mc_version}-fabric"
+        announcementTitle = "Download from Modrinth (fabric)"
     }
 
     // --- Discord (single announcement covering every upload above) ---

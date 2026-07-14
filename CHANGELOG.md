@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 20.1.4 - 2026-07-13
+
+### Added
+  - Spanish translations (es_es, es_mx)
+  - `/losttrinkets unlock <targets> trinket <id>` to grant a specific trinket
+
+### Changed
+  - Download buttons in update announcements now show the mod loader
+
+---
+
 ## 20.1.3 - 2026-05-30
 
 ### Added
