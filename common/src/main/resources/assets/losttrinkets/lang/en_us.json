@@ -94,6 +94,8 @@
   "gui.losttrinkets.trinket.slot.click.add": "Click To Add",
   "chat.losttrinkets.unlocked.trinket": "%s has unlocked %s trinket",
   "chat.losttrinkets.unlocked.all": "Unlocked all trinkets!!",
+  "chat.losttrinkets.unlocked.specific": "Unlocked %s!",
+  "chat.losttrinkets.unlock.invalid": "\"%s\" is not a valid Lost Trinket",
   "_comment": "--------------------------- Info -------------------------------",
   "info.losttrinkets.piggy": "You can ride any pig without the needs of carrots on a stick and saddles",
   "info.losttrinkets.creepo": "Creepers targeting you explode but cause no harm",
