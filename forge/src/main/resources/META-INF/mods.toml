@@ -7,6 +7,7 @@ license="LGPLv3"
 modId="losttrinkets"
 version="${version}"
 displayName="Lost Trinkets"
+logoFile="assets/losttrinkets/icon.png"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/lost-trinkets"
 authors="owmii, guivnf"
 description='''

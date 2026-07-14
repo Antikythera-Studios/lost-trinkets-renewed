@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
   - Download buttons in update announcements now show the mod loader
+  - Updated the mod icon
 
 ---
 
