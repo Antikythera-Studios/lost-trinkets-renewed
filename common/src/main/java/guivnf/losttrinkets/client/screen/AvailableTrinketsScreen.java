@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.client.screen;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import guivnf.losttrinkets.LostTrinkets;
@@ -79,19 +79,18 @@ public class AvailableTrinketsScreen extends AbstractLTScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics, mx, my, pt);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mx, int my, float pt) {
+        super.extractRenderState(guiGraphics, mx, my, pt);
         if (this.minecraft.player != null) {
             List<ITrinket> all = LostTrinketsAPI.getTrinkets(this.minecraft.player).getAvailableTrinkets();
             if (all.isEmpty()) {
                 String name = Component.translatable("gui.losttrinkets.trinket.empty").getString();
-                guiGraphics.drawString(this.font, name, this.width / 2 - this.font.width(name) / 2, this.height / 2 - 5,
-                        0x999999, false);
+                guiGraphics.text(this.font, name, this.width / 2 - this.font.width(name) / 2, this.height / 2 - 5,
+                        0xFF999999, false);
             }
         }
-        super.render(guiGraphics, mx, my, pt);
         String s = getTitle().getString();
-        guiGraphics.drawString(this.font, s, this.width / 2 - this.font.width(s) / 2, this.y - 20, 0x999999);
+        guiGraphics.text(this.font, s, this.width / 2 - this.font.width(s) / 2, this.y - 20, 0xFF999999);
         for (TrinketButton btn : this.trinketButtons) {
             if (btn.isHovered()) {
                 ITrinket trinket = btn.trinket;
@@ -102,7 +101,7 @@ public class AvailableTrinketsScreen extends AbstractLTScreen {
                         .translatable(
                                 "gui.losttrinkets.rarity." + trinket.getRarity().name().toLowerCase(Locale.ENGLISH))
                         .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-                guiGraphics.renderComponentTooltip(this.font, list, mx, my);
+                guiGraphics.setComponentTooltipForNextFrame(this.font, list, mx, my);
                 break;
             }
         }

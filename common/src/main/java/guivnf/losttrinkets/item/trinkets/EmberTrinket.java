@@ -16,7 +16,7 @@ public class EmberTrinket extends Trinket<EmberTrinket> {
     }
 
     public static float onHurt(LivingEntity entityLiving, DamageSource source, float amount) {
-        Entity immediateSource = source.getDirectEntity();
+        Entity immediateSource = source.getEntity();
         if (immediateSource instanceof LivingEntity living) {
             if (entityLiving instanceof Player player) {
                 Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);

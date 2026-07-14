@@ -20,10 +20,10 @@ public class PlayerData {
     }
 
     public void deserializeNBT(CompoundTag nbt) {
-        this.trinkets.deserializeNBT(nbt.getCompound("trinkets"));
-        this.unlockDelay = nbt.getLong("unlock_delay");
-        this.allowFlying = nbt.getBoolean("allow_flying");
-        this.wasFlying = nbt.getBoolean("was_flying");
+        this.trinkets.deserializeNBT(nbt.getCompoundOrEmpty("trinkets"));
+        this.unlockDelay = nbt.getLongOr("unlock_delay", 0L);
+        this.allowFlying = nbt.getBooleanOr("allow_flying", false);
+        this.wasFlying = nbt.getBooleanOr("was_flying", false);
     }
 
     public void setSync(boolean sync) {

@@ -30,7 +30,7 @@ public class OctopusLegTrinket extends Trinket<OctopusLegTrinket> {
             if (immediateSource instanceof LivingEntity living) {
                 if (trinkets.isActive(Itms.OCTOPUS_LEG.get())) {
                     var server = serverLevel.getServer();
-                    server.tell(new TickTask(server.getTickCount() + 1, () -> disarm(serverLevel, living)));
+                    server.schedule(new TickTask(server.getTickCount() + 1, () -> disarm(serverLevel, living)));
                 }
             }
         }
@@ -40,19 +40,19 @@ public class OctopusLegTrinket extends Trinket<OctopusLegTrinket> {
         if (!living.isAlive())
             return;
         ItemStack stack = living.getMainHandItem();
-        if (!stack.isEmpty() && level.random.nextInt(5) == 0) {
+        if (!stack.isEmpty() && level.getRandom().nextInt(5) == 0) {
             ItemStack stack1 = stack.copy();
             if (stack1.isDamageableItem()) {
                 if (!stack1.isDamaged()) {
                     int damage = stack1.getMaxDamage();
                     if (damage > 10) {
                         damage /= 2;
-                        damage = 10 + level.random.nextInt(damage);
+                        damage = 10 + level.getRandom().nextInt(damage);
                     }
                     stack1.setDamageValue(damage);
                 }
             }
-            living.spawnAtLocation(stack1);
+            living.spawnAtLocation(level, stack1);
             living.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         }
     }

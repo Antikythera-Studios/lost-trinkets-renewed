@@ -34,11 +34,11 @@ public class AbstractLTScreen extends LTScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(net.minecraft.client.input.KeyEvent keyEvent) {
+        if (super.keyPressed(keyEvent)) {
             return true;
         } else {
-            if (KeyHandler.TRINKET_GUI.matches(keyCode, scanCode)) {
+            if (KeyHandler.TRINKET_GUI.matches(keyEvent)) {
                 if (this.minecraft.player != null) {
                     this.onClose();
                 }

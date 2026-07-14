@@ -25,7 +25,7 @@ public abstract class AbstractBlockStateMixin {
         LootParams params = builder.withParameter(LootContextParams.BLOCK_STATE, self)
                 .create(LootContextParamSets.BLOCK);
         List<ItemStack> drops = cir.getReturnValue();
-        Entity entity = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
+        Entity entity = params.contextMap().getOptional(LootContextParams.THIS_ENTITY);
         if (entity instanceof Player) {
             cir.setReturnValue(DragonBreathTrinket.autoSmelt(drops, (Player) entity));
         }

@@ -2,7 +2,7 @@ package guivnf.losttrinkets.handler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
@@ -19,13 +19,13 @@ import java.util.*;
 public class UnlockHandler {
 
     private static final TagKey<Block> FORGE_ORES = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath("forge", "ores"));
+            Identifier.fromNamespaceAndPath("forge", "ores"));
     private static final TagKey<Block> NEOFORGE_ORES = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath("neoforge", "ores"));
+            Identifier.fromNamespaceAndPath("neoforge", "ores"));
     private static final TagKey<Block> COMMON_ORES = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath("c", "ores"));
+            Identifier.fromNamespaceAndPath("c", "ores"));
     private static final TagKey<Block> COMMON_LOGS = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath("c", "logs"));
+            Identifier.fromNamespaceAndPath("c", "logs"));
 
     private static final Map<UUID, Type> MAP = new HashMap<>();
     private static final Ticker DELAY = new Ticker(10);
@@ -70,21 +70,21 @@ public class UnlockHandler {
     }
 
     public static void queueUnlock(Player player, Type type) {
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             MAP.put(player.getUUID(), type);
         }
     }
 
     public static void trade(Player player) {
         if (Configs.GENERAL.unlockEnabled && Configs.GENERAL.tradingUnlockEnabled) {
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 queueUnlock(player, Type.TRADING);
             }
         }
     }
 
     public static void kill(Player player, boolean isBoss) {
-        if (Configs.GENERAL.unlockEnabled && !player.level().isClientSide) {
+        if (Configs.GENERAL.unlockEnabled && !player.level().isClientSide()) {
             if (isBoss) {
                 if (Configs.GENERAL.bossKillingUnlockEnabled) {
                     queueUnlock(player, Type.BOSS_KILL);
@@ -98,7 +98,7 @@ public class UnlockHandler {
     }
 
     public static void checkBlockHarvest(Player player, Level level, BlockPos pos, BlockState state) {
-        if (Configs.GENERAL.unlockEnabled && !level.isClientSide) {
+        if (Configs.GENERAL.unlockEnabled && !level.isClientSide()) {
             if (state.is(FORGE_ORES) || state.is(NEOFORGE_ORES) || state.is(COMMON_ORES)) {
                 if (Configs.GENERAL.oresMiningUnlockEnabled) {
                     queueUnlock(player, Type.ORE_MINE);
@@ -117,7 +117,7 @@ public class UnlockHandler {
 
     public static void useHoe(Player player) {
         if (Configs.GENERAL.unlockEnabled && Configs.GENERAL.farmingUnlockEnabled) {
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 queueUnlock(player, Type.FARM_HARVEST);
             }
         }
@@ -125,7 +125,7 @@ public class UnlockHandler {
 
     public static void bonemeal(Player player) {
         if (Configs.GENERAL.unlockEnabled && Configs.GENERAL.farmingUnlockEnabled) {
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 queueUnlock(player, Type.FARM_HARVEST);
             }
         }

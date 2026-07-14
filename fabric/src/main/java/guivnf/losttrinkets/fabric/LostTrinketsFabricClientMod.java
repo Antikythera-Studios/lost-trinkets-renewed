@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.client.render.entity.EntityRenderer;
 import guivnf.losttrinkets.client.render.tile.TileRenderer;
@@ -15,7 +15,7 @@ public class LostTrinketsFabricClientMod implements ClientModInitializer {
     public void onInitializeClient() {
         guivnf.losttrinkets.client.network.ClientPacketHandlers.registerAll();
         ResourceManagerHelper.registerBuiltinResourcePack(
-                ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "legacy"),
+                Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "legacy"),
                 FabricLoader.getInstance().getModContainer(LostTrinkets.MOD_ID).orElseThrow(),
                 ResourcePackActivationType.NORMAL
         );

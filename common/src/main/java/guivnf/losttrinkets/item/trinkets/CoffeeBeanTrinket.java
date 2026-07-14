@@ -18,9 +18,9 @@ public class CoffeeBeanTrinket extends Trinket<CoffeeBeanTrinket> {
     public static boolean shouldDenyEffect(Player player, Holder<MobEffect> effect) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (trinkets.isActive(Itms.COFFEE_BEAN.get())) {
-            return effect == MobEffects.CONFUSION
-                    || effect == MobEffects.DIG_SLOWDOWN
-                    || effect == MobEffects.MOVEMENT_SLOWDOWN;
+            return effect == MobEffects.NAUSEA
+                    || effect == MobEffects.MINING_FATIGUE
+                    || effect == MobEffects.SLOWNESS;
         }
         return false;
     }

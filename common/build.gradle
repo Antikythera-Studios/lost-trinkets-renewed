@@ -3,7 +3,7 @@ architectury {
 }
 
 dependencies {
-    modImplementation "dev.architectury:architectury:${project.architectury_version}"
+    implementation "dev.architectury:architectury:${project.architectury_version}"
 
     compileOnly("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forge_config_api_port_version}") { transitive false }
 

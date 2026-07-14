@@ -28,11 +28,11 @@
     "losttrinkets.fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.18.5",
+    "fabricloader": ">=0.19.3",
     "fabric-api": "*",
-    "architectury": ">=13.0.0",
-    "minecraft": "~1.21.1",
-    "forgeconfigapiport": ">=21.0.0"
+    "architectury": ">=20.0.0",
+    "minecraft": "~26.1.2",
+    "forgeconfigapiport": ">=26.0.0"
   },
   "suggests": {
     "jei": "*"

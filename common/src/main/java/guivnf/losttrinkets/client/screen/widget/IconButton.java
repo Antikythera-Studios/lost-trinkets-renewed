@@ -1,6 +1,6 @@
 package guivnf.losttrinkets.client.screen.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -26,13 +26,13 @@ public class IconButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         texture.draw(graphics, getX(), getY());
-        if (isHovered && tooltipProvider != null) {
+        if (isHovered() && tooltipProvider != null) {
             List<Component> list = new ArrayList<>();
             tooltipProvider.accept(list);
             if (!list.isEmpty()) {
-                graphics.renderComponentTooltip(
+                graphics.setComponentTooltipForNextFrame(
                         net.minecraft.client.Minecraft.getInstance().font,
                         list, mouseX, mouseY);
             }

@@ -3,7 +3,7 @@ package guivnf.losttrinkets.network.packet;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class SyncDataPacket implements LTPacket {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_data");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_data");
 
     private final UUID uuid;
     private final CompoundTag nbt;
@@ -31,7 +31,7 @@ public class SyncDataPacket implements LTPacket {
     public CompoundTag getNbt() { return nbt; }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

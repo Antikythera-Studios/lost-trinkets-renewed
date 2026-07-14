@@ -16,7 +16,7 @@ public class LuckCoinTrinket extends Trinket<LuckCoinTrinket> implements ITickab
 
     @Override
     public void tick(Level level, BlockPos pos, Player player) {
-        if (!level.isClientSide && player.tickCount % 90 == 0) {
+        if (!level.isClientSide() && player.tickCount % 90 == 0) {
             player.addEffect(new MobEffectInstance(MobEffects.LUCK, 300, 1, false, false));
         }
     }

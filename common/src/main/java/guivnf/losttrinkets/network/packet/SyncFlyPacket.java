@@ -2,14 +2,14 @@ package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.network.LTPacket;
 
 import java.util.function.BiConsumer;
 
 public class SyncFlyPacket implements LTPacket {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_fly");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "sync_fly");
 
     private final boolean fly;
 
@@ -20,7 +20,7 @@ public class SyncFlyPacket implements LTPacket {
     public boolean isFly() { return fly; }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

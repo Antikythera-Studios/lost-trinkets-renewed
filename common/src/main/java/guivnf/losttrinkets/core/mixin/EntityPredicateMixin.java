@@ -13,7 +13,8 @@ import org.jetbrains.annotations.Nullable;
 @Mixin(TargetingConditions.class)
 public class EntityPredicateMixin {
     @Inject(method = "test", at = @At("TAIL"), cancellable = true)
-    public void test(LivingEntity attacker, @Nullable LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
+    public void test(net.minecraft.server.level.ServerLevel level, LivingEntity attacker,
+            @Nullable LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ() && target != null) {
             if (TargetHandler.preventTargeting(attacker, target)) {
                 cir.setReturnValue(false);

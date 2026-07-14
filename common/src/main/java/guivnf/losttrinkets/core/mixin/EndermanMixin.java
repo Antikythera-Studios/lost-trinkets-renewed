@@ -12,7 +12,7 @@ import guivnf.losttrinkets.item.trinkets.StickyMindTrinket;
 
 @Mixin(EnderMan.class)
 public class EndermanMixin {
-    @Inject(method = "isLookingAtMe", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "isBeingStaredBy", at = @At("RETURN"), cancellable = true)
     private void losttrinkets$blankEyes(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValueZ()) {
             if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.BLANK_EYES.get())) {

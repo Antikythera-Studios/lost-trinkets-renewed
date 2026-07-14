@@ -43,7 +43,7 @@ public class RubyHeartTrinket extends Trinket<RubyHeartTrinket> {
                 }
             }
             if (!flag && trinkets.isActive(Itms.BROKEN_TOTEM.get())) {
-                if (player.level().random.nextInt(4) == 0) {
+                if (player.level().getRandom().nextInt(4) == 0) {
                     if (player instanceof ServerPlayer serverPlayer) {
                         serverPlayer.awardStat(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                         CriteriaTriggers.USED_TOTEM.trigger(serverPlayer, new ItemStack(Items.TOTEM_OF_UNDYING));

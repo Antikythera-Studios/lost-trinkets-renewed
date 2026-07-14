@@ -4,7 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -32,15 +32,15 @@ public class DarkEggTrinket extends Trinket<DarkEggTrinket> {
                     int vexCount = level.getEntitiesOfClass(DarkVexEntity.class, bb).size();
                     if (vexCount < 6 && level instanceof ServerLevel serverLevel) {
                         for (int i = 0; i < 3; i++) {
-                            DarkVexEntity vex = Entities.DARK_VEX.get().create(serverLevel);
+                            DarkVexEntity vex = Entities.DARK_VEX.get().create(serverLevel, EntitySpawnReason.MOB_SUMMONED);
                             if (vex != null) {
                                 vex.finalizeSpawn(serverLevel,
                                         serverLevel.getCurrentDifficultyAt(player.blockPosition()),
-                                        MobSpawnType.MOB_SUMMONED, null);
+                                        EntitySpawnReason.MOB_SUMMONED, null);
                                 vex.setTarget(living);
                                 vex.setOwner(player);
                                 vex.setBoundOrigin(player.blockPosition());
-                                vex.moveTo(player.getX(), player.getY(), player.getZ());
+                                vex.snapTo(player.getX(), player.getY(), player.getZ());
                                 serverLevel.addFreshEntity(vex);
                             }
                         }

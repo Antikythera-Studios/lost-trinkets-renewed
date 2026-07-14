@@ -17,8 +17,8 @@ public class ButchersCleaverTrinket extends Trinket<ButchersCleaverTrinket> {
 
     public static ItemStack getExtraDrop(Player player, LivingEntity target) {
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.BUTCHERS_CLEAVER.get())) {
-            if (target instanceof Animal && target.level().random.nextInt(10) == 0) {
-                return new ItemStack(Items.BONE, target.level().random.nextInt(2) + 1);
+            if (target instanceof Animal && target.level().getRandom().nextInt(10) == 0) {
+                return new ItemStack(Items.BONE, target.level().getRandom().nextInt(2) + 1);
             }
         }
         return ItemStack.EMPTY;

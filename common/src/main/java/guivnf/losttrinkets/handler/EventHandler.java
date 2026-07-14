@@ -168,17 +168,34 @@ public class EventHandler {
         amount = SlingshotTrinket.onHurt(entityLiving, source, amount);
         amount = WitherHandTrinket.onHurt(entityLiving, source, amount);
 
-        if (source.getEntity() instanceof Player) {
-            Player player = (Player) source.getEntity();
-            Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-            if (trinkets.isActive(Itms.SILVER_NAIL.get())) {
-                amount *= 1.1F;
-            }
-            if (trinkets.isActive(Itms.GLORY_SHARDS.get())) {
-                amount *= 1.2F;
-            }
-        }
         return amount;
+    }
+
+    // Outgoing melee damage multiplier from the attacker's trinkets (Silver Nail, Glory Shards).
+    // Applied per-loader at the outgoing-damage hook (NeoForge LivingIncomingDamageEvent / Fabric mixin).
+    public static float getOutgoingDamageMultiplier(Player attacker) {
+        Trinkets trinkets = LostTrinketsAPI.getTrinkets(attacker);
+        float mult = 1.0F;
+        if (trinkets.isActive(Itms.SILVER_NAIL.get())) {
+            mult *= 1.1F;
+        }
+        if (trinkets.isActive(Itms.GLORY_SHARDS.get())) {
+            mult *= 1.2F;
+        }
+        return mult;
+    }
+
+    // Effective looting level from the killer's trinkets (Golden Tooth, Golden Horseshoe).
+    public static int getLootingLevel(Player killer) {
+        Trinkets trinkets = LostTrinketsAPI.getTrinkets(killer);
+        int level = 0;
+        if (trinkets.isActive(Itms.GOLDEN_TOOTH.get())) {
+            level++;
+        }
+        if (trinkets.isActive(Itms.GOLDEN_HORSESHOE.get())) {
+            level++;
+        }
+        return level;
     }
 
     public static boolean onDeath(LivingEntity entityLiving, net.minecraft.world.damagesource.DamageSource source) {

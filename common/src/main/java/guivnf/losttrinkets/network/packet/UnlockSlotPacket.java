@@ -2,7 +2,7 @@ package guivnf.losttrinkets.network.packet;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -11,10 +11,10 @@ import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.network.LTPacket;
 
 public class UnlockSlotPacket implements LTPacket {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "unlock_slot");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "unlock_slot");
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

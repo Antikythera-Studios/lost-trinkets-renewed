@@ -51,7 +51,7 @@ public class TreasureRingTrinket extends Trinket<TreasureRingTrinket> {
         if (!(player.level() instanceof ServerLevel serverLevel))
             return Collections.emptyList();
 
-        ResourceKey<LootTable> lootTableId = LOOTS.get(serverLevel.random.nextInt(LOOTS.size()));
+        ResourceKey<LootTable> lootTableId = LOOTS.get(serverLevel.getRandom().nextInt(LOOTS.size()));
         LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootTableId);
         LootParams params = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.ORIGIN, target.position())

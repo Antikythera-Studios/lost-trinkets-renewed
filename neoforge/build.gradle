@@ -24,9 +24,9 @@ configurations {
 dependencies {
     neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
-    modApi "dev.architectury:architectury-neoforge:${project.architectury_version}"
+    api "dev.architectury:architectury-neoforge:${project.architectury_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ":common", configuration: "transformProductionNeoForge")
 
     compileOnly("mezz.jei:jei-${project.mc_version}-neoforge-api:${project.jei_version}") { transitive false }
@@ -46,22 +46,34 @@ processResources {
     }
 }
 
+jar {
+    archiveClassifier = "raw"
+}
+
+// MC 26.1+ is unobfuscated: loom-no-remap has no remapJar, so shadowJar is the primary artifact.
+// It must build on top of the (Loom-modified) jar output, not the raw source set.
 shadowJar {
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()
+    from(zipTree(jar.archiveFile))
+
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier = "dev-shadow"
-}
-
-remapJar {
-    inputFile.set shadowJar.archiveFile
-    dependsOn shadowJar
     archiveClassifier = "neoforge"
 }
 
-jar {
-    archiveClassifier = "dev"
+// Make the shadow jar the published/consumed artifact in place of the removed remapJar.
+configurations {
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
 
 sourcesJar {

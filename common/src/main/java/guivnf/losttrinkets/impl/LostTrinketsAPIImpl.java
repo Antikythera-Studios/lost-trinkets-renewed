@@ -22,7 +22,7 @@ public class LostTrinketsAPIImpl implements ILostTrinketsAPI {
 
     @Override
     public boolean unlock(Player player, ITrinket trinket) {
-        if (!player.level().isClientSide && isEnabled(trinket) && !getTrinkets(player).has(trinket)) {
+        if (!player.level().isClientSide() && isEnabled(trinket) && !getTrinkets(player).has(trinket)) {
             List<ITrinket> trinketList = UNLOCK_QUEUE.get(player.getUUID());
             if (trinketList != null) {
                 trinketList.add(trinket);
@@ -36,7 +36,7 @@ public class LostTrinketsAPIImpl implements ILostTrinketsAPI {
 
     @Override
     public void unlock(Player player) {
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             WEIGHTED_UNLOCK_QUEUE.add(player.getUUID());
         }
     }

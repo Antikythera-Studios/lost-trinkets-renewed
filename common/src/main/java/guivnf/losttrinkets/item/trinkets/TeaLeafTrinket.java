@@ -27,7 +27,7 @@ public class TeaLeafTrinket extends Trinket<TeaLeafTrinket> {
 
     @Override
     public void onActivated(Level level, BlockPos pos, Player player) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
         player.removeEffect(MobEffects.POISON);
         player.removeEffect(MobEffects.WITHER);
     }

@@ -3,7 +3,7 @@ package guivnf.losttrinkets.network;
 import dev.architectury.networking.NetworkManager;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -20,11 +20,11 @@ public class LTNetwork {
         this.modId = modId;
     }
 
-    public ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(modId, path);
+    public Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(modId, path);
     }
 
-    public <T> void registerS2C(ResourceLocation id,
+    public <T> void registerS2C(Identifier id,
             Function<RegistryFriendlyByteBuf, T> decoder,
             BiConsumer<T, NetworkManager.PacketContext> handler) {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, id, (buf, context) -> {
@@ -33,7 +33,7 @@ public class LTNetwork {
         });
     }
 
-    public <T> void registerC2S(ResourceLocation id,
+    public <T> void registerC2S(Identifier id,
             Function<RegistryFriendlyByteBuf, T> decoder,
             BiConsumer<T, NetworkManager.PacketContext> handler) {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, id, (buf, context) -> {
@@ -48,7 +48,7 @@ public class LTNetwork {
         return buf;
     }
 
-    public void toServer(ResourceLocation id, Consumer<RegistryFriendlyByteBuf> writer) {
+    public void toServer(Identifier id, Consumer<RegistryFriendlyByteBuf> writer) {
         if (!NetworkManager.canServerReceive(id)) return;
         NetworkManager.sendToServer(id, makeBuf(writer));
     }
@@ -58,7 +58,7 @@ public class LTNetwork {
         NetworkManager.sendToServer(packet.getId(), makeBuf(packet::write));
     }
 
-    public void toClient(ResourceLocation id, Consumer<RegistryFriendlyByteBuf> writer, Player player) {
+    public void toClient(Identifier id, Consumer<RegistryFriendlyByteBuf> writer, Player player) {
         if (player instanceof ServerPlayer sp) {
             NetworkManager.sendToPlayer(sp, id, makeBuf(writer));
         }
@@ -71,7 +71,7 @@ public class LTNetwork {
     }
 
     public void toTrackingAndSelf(LTPacket packet, ServerPlayer player) {
-        if (player.getServer() == null)
+        if (player.level().getServer() == null)
             return;
         ServerLevel level = (ServerLevel) player.level();
         level.getChunkSource().chunkMap.getPlayers(player.chunkPosition(), false)

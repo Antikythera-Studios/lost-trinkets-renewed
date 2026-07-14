@@ -20,7 +20,9 @@ public class GoldenMelonTrinket extends Trinket<GoldenMelonTrinket> {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (stack.has(DataComponents.FOOD)) {
             FoodProperties food = stack.get(DataComponents.FOOD);
-            if (food != null && food.effects().isEmpty()) {
+            net.minecraft.world.item.component.Consumable consumable = stack.get(DataComponents.CONSUMABLE);
+            boolean noEffects = consumable == null || consumable.onConsumeEffects().isEmpty();
+            if (food != null && noEffects) {
                 if (trinkets.isActive(Itms.GOLDEN_MELON.get())) {
                     player.heal(food.nutrition());
                 }

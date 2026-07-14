@@ -16,7 +16,7 @@ public class GoldenSkullTrinket extends Trinket<GoldenSkullTrinket> {
 
     public static ItemStack getExtraDrop(Player player, LivingEntity target) {
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.GOLDEN_SKULL.get())) {
-            if (target instanceof Monster && target.level().random.nextInt(20) == 0) {
+            if (target instanceof Monster && target.level().getRandom().nextInt(20) == 0) {
                 return new ItemStack(Itms.TREASURE_BAG.get());
             }
         }

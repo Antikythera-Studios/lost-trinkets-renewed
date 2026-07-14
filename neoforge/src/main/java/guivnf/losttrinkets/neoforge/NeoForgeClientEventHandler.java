@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.neoforge;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackLocationInfo;
@@ -33,7 +33,7 @@ import guivnf.losttrinkets.client.handler.hud.HudHandler;
 import guivnf.losttrinkets.client.model.DarkVexModel;
 import guivnf.losttrinkets.client.render.entity.DarkVexModelLayer;
 
-@EventBusSubscriber(modid = LostTrinkets.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = LostTrinkets.MOD_ID, value = Dist.CLIENT)
 public class NeoForgeClientEventHandler {
 
     @SubscribeEvent
@@ -44,12 +44,9 @@ public class NeoForgeClientEventHandler {
 
     @SubscribeEvent
     @SuppressWarnings("unchecked")
-    public static void onRenderLivingPre(RenderLivingEvent.Pre<?, ?> event) {
-        LivingEntity living = event.getEntity();
-        LivingEntityRenderer renderer = event.getRenderer();
+    public static void onRenderLivingPre(RenderLivingEvent.Pre<?, ?, ?> event) {
         boolean cancel = ClientEventHandler.onRenderLivingPre(
-                living, renderer, event.getPoseStack(), event.getMultiBufferSource(),
-                event.getPartialTick(), event.getPackedLight());
+                event.getRenderState(), event.getRenderer(), event.getPoseStack(), event.getPartialTick());
         if (cancel) {
             event.setCanceled(true);
         }
@@ -58,7 +55,7 @@ public class NeoForgeClientEventHandler {
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
         if (Minecraft.getInstance().screen == null) {
-            GuiGraphics guiGraphics = event.getGuiGraphics();
+            GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
             Minecraft mc = Minecraft.getInstance();
             HudHandler.renderHud(guiGraphics,
                     mc.getWindow().getGuiScaledWidth(),
@@ -68,40 +65,21 @@ public class NeoForgeClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onScreenRender(ScreenEvent.Render.Post event) {
-        GuiGraphics guiGraphics = event.getGuiGraphics();
+        GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
         HudHandler.renderHud(guiGraphics, event.getScreen().width, event.getScreen().height);
     }
 
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            var resourcePath = ModList.get()
-                    .getModFileById(LostTrinkets.MOD_ID)
-                    .getFile()
-                    .findResource("resourcepacks/legacy");
-            PackLocationInfo locationInfo = new PackLocationInfo(
-                    "builtin/losttrinkets_legacy",
+            // MC 26.1: AddPackFindersEvent#addPackFinders locates the pack from the mod's resources
+            // by Identifier, replacing the old ModFile#findResource + PathPackResources plumbing.
+            event.addPackFinders(
+                    net.minecraft.resources.Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "resourcepacks/legacy"),
+                    PackType.CLIENT_RESOURCES,
                     Component.translatable("pack.losttrinkets.legacy.title"),
                     PackSource.BUILT_IN,
-                    Optional.empty()
-            );
-            Pack pack = Pack.readMetaAndCreate(
-                    locationInfo,
-                    new Pack.ResourcesSupplier() {
-                        @Override
-                        public PackResources openPrimary(PackLocationInfo info) {
-                            return new PathPackResources(info, resourcePath);
-                        }
-                        @Override
-                        public PackResources openFull(PackLocationInfo info, Pack.Metadata metadata) {
-                            return new PathPackResources(info, resourcePath);
-                        }
-                    },
-                    PackType.CLIENT_RESOURCES,
-                    new PackSelectionConfig(false, Pack.Position.TOP, false)
-            );
-            if (pack != null) {
-                event.addRepositorySource(consumer -> consumer.accept(pack));
-            }
+                    false,
+                    Pack.Position.TOP);
         }
     }
 

@@ -21,11 +21,11 @@ public class LunchBagTrinket extends Trinket<LunchBagTrinket> {
     public static void onItemEaten(Player player, ItemStack stack, Level level) {
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
         if (stack.has(DataComponents.FOOD)) {
-            FoodProperties food = stack.get(DataComponents.FOOD);
-            if (food != null && food.effects().isEmpty()) {
-                if (trinkets.isActive(Itms.LUNCH_BAG.get()) && level.random.nextInt(10) == 0) {
+            net.minecraft.world.item.component.Consumable consumable = stack.get(DataComponents.CONSUMABLE);
+            if (consumable == null || consumable.onConsumeEffects().isEmpty()) {
+                if (trinkets.isActive(Itms.LUNCH_BAG.get()) && level.getRandom().nextInt(10) == 0) {
                     player.addEffect(new MobEffectInstance(MobEffects.SATURATION,
-                            level.random.nextInt(200) + 100, 1, false, false));
+                            level.getRandom().nextInt(200) + 100, 1, false, false));
                 }
             }
         }

@@ -20,7 +20,7 @@ public class IceShardTrinket extends Trinket<IceShardTrinket> {
             if (!LostTrinketsAPI.getTrinkets(player).isActive(Itms.ICE_SHARD.get()))
                 return;
             Level level = entity.level();
-            if (level.isClientSide)
+            if (level.isClientSide())
                 return;
 
             int radius = 2;

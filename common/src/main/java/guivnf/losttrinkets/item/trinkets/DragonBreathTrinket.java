@@ -38,10 +38,11 @@ public class DragonBreathTrinket extends Trinket<DragonBreathTrinket> {
                 Iterator<ItemStack> itr = remaining.iterator();
                 while (itr.hasNext()) {
                     ItemStack in = itr.next();
-                    Optional<RecipeHolder<SmeltingRecipe>> recipe = player.level().getRecipeManager()
-                            .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(in), player.level());
+                    SingleRecipeInput recipeInput = new SingleRecipeInput(in);
+                    Optional<RecipeHolder<SmeltingRecipe>> recipe = player.level().getServer().getRecipeManager()
+                            .getRecipeFor(RecipeType.SMELTING, recipeInput, player.level());
                     if (recipe.isPresent()) {
-                        ItemStack output = recipe.get().value().getResultItem(player.level().registryAccess()).copy();
+                        ItemStack output = recipe.get().value().assemble(recipeInput).copy();
                         if (!output.isEmpty()) {
                             output.setCount(output.getCount() * in.getCount());
                             smelted.add(output);

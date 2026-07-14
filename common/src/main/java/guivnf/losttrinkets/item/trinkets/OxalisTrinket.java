@@ -27,7 +27,7 @@ public class OxalisTrinket extends Trinket<OxalisTrinket> {
 
     @Override
     public void onActivated(Level level, BlockPos pos, Player player) {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         player.removeEffect(MobEffects.BAD_OMEN);
         player.removeEffect(MobEffects.UNLUCK);

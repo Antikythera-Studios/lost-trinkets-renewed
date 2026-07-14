@@ -5,7 +5,7 @@ import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import guivnf.losttrinkets.api.trinket.ITickableTrinket;
 import guivnf.losttrinkets.api.trinket.Rarity;
@@ -21,7 +21,7 @@ public class WarmVoidTrinket extends Trinket<WarmVoidTrinket> implements ITickab
     @Override
     public void tick(Level level, BlockPos pos, Player player) {
         if (player instanceof ServerPlayer serverPlayer
-                && player.getY() + Math.min(0, player.getDeltaMovement().y) <= level.getMinBuildHeight()) {
+                && player.getY() + Math.min(0, player.getDeltaMovement().y) <= level.getMinY()) {
             if (!player.isPassenger() && !player.isVehicle()) {
                 teleportToSpawnPoint(serverPlayer);
             }
@@ -33,28 +33,29 @@ public class WarmVoidTrinket extends Trinket<WarmVoidTrinket> implements ITickab
         player.setDeltaMovement(Vec3.ZERO);
         player.fallDistance = 0;
 
-        DimensionTransition transition = player.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.DO_NOTHING);
+        TeleportTransition transition = player.findRespawnPositionAndUseSpawnBlock(false, TeleportTransition.DO_NOTHING);
         var destWorld = transition.newLevel();
-        Vec3 dest = transition.pos();
+        Vec3 dest = transition.position();
         float yRot = transition.yRot();
 
         if (transition.missingRespawnBlock()) {
-            if (player.getRespawnPosition() != null) {
+            if (player.getRespawnConfig() != null) {
                 player.connection.send(
                         new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0.0F));
             }
-            BlockPos worldSpawn = destWorld.getSharedSpawnPos();
+            net.minecraft.world.level.storage.LevelData.RespawnData rd = destWorld.getRespawnData();
+            BlockPos worldSpawn = rd.globalPos().pos();
             dest = new Vec3(worldSpawn.getX() + 0.5, worldSpawn.getY(), worldSpawn.getZ() + 0.5);
-            yRot = destWorld.getSharedSpawnAngle();
+            yRot = rd.yaw();
         }
 
         if (player.level() == destWorld) {
             player.connection.teleport(dest.x, dest.y, dest.z, yRot, 0);
         } else {
-            player.teleportTo(destWorld, dest.x, dest.y, dest.z, Collections.emptySet(), yRot, 0);
+            player.teleportTo(destWorld, dest.x, dest.y, dest.z, Collections.emptySet(), yRot, 0, false);
         }
 
-        while (!destWorld.noCollision(player) && player.getY() < destWorld.getMaxBuildHeight()) {
+        while (!destWorld.noCollision(player) && player.getY() < destWorld.getMaxY()) {
             player.setPos(player.getX(), player.getY() + 1.0, player.getZ());
         }
     }

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -33,13 +33,13 @@ import guivnf.losttrinkets.util.ServerHelper;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = LostTrinkets.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = LostTrinkets.MOD_ID)
 public class NeoForgeEventHandler {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             EventHandler.tick(player);
             if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
                 DataManager.update(sp);
@@ -73,13 +73,21 @@ public class NeoForgeEventHandler {
     public static void onLivingAttack(LivingIncomingDamageEvent event) {
         if (EventHandler.onAttack(event.getEntity(), event.getSource())) {
             event.setCanceled(true);
+            return;
+        }
+        // Attacker's outgoing-damage trinkets (Silver Nail, Glory Shards) — scale before reductions.
+        if (event.getSource().getEntity() instanceof Player attacker) {
+            float mult = EventHandler.getOutgoingDamageMultiplier(attacker);
+            if (mult != 1.0F) {
+                event.setAmount(event.getAmount() * mult);
+            }
         }
     }
 
     @SubscribeEvent
     public static void onLivingHurt(LivingDamageEvent.Pre event) {
         float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
-        event.getContainer().setNewDamage(amount);
+        event.setNewDamage(amount);
     }
 
     @SubscribeEvent
@@ -94,6 +102,24 @@ public class NeoForgeEventHandler {
         LivingEntity target = event.getEntity();
         Entity killer = event.getSource().getEntity();
         if (killer instanceof Player player) {
+            // Approximate the Golden Tooth / Golden Horseshoe looting bonus (the vanilla getMobLooting
+            // hook was removed): add 0..level extra of each existing drop, like vanilla looting counts.
+            int looting = EventHandler.getLootingLevel(player);
+            if (looting > 0) {
+                net.minecraft.util.RandomSource rand = target.getRandom();
+                java.util.List<net.minecraft.world.entity.item.ItemEntity> bonus = new java.util.ArrayList<>();
+                for (net.minecraft.world.entity.item.ItemEntity drop : event.getDrops()) {
+                    int extra = rand.nextInt(looting + 1);
+                    if (extra > 0) {
+                        ItemStack copy = drop.getItem().copy();
+                        copy.setCount(extra);
+                        bonus.add(new net.minecraft.world.entity.item.ItemEntity(
+                                target.level(), target.getX(), target.getY(), target.getZ(), copy));
+                    }
+                }
+                event.getDrops().addAll(bonus);
+            }
+
             List<ItemStack> extras = EventHandler.getExtraDrops(player, target);
             extras.forEach(stack -> event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(
                     target.level(), target.getX(), target.getY(), target.getZ(), stack)));
@@ -134,9 +160,9 @@ public class NeoForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (event.getPlayer() != null && !event.getLevel().isClientSide()) {
-            EventHandler.onBreak(event.getPlayer(), event.getPos(), event.getState());
+    public static void onBlockBreak(BlockDropsEvent event) {
+        if (event.getBreaker() instanceof Player player && !event.getLevel().isClientSide()) {
+            EventHandler.onBreak(player, event.getPos(), event.getState());
         }
     }
 

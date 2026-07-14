@@ -3,7 +3,7 @@ package guivnf.losttrinkets.item.trinkets;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -24,9 +24,9 @@ import java.util.Set;
 
 public class OctopickTrinket extends Trinket<OctopickTrinket> {
     private static final ThreadLocal<ServerPlayer> octoMiningPlayer = new ThreadLocal<>();
-    private static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("neoforge", "ores"));
+    private static final TagKey<Block> ORE_TAG = TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("neoforge", "ores"));
     private static final TagKey<Block> FABRIC_ORE_TAG = TagKey.create(Registries.BLOCK,
-            ResourceLocation.fromNamespaceAndPath("c", "ores"));
+            Identifier.fromNamespaceAndPath("c", "ores"));
 
     public OctopickTrinket(Rarity rarity, Properties properties) {
         super(rarity, properties);
@@ -52,7 +52,7 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
         if (!trinkets.isActive(Itms.OCTOPICK.get()))
             return;
 
-        var level = player.serverLevel();
+        var level = (net.minecraft.server.level.ServerLevel) player.level();
         Set<BlockPos> toBreak = Sets.newLinkedHashSet();
         if (state.is(ORE_TAG) || state.is(FABRIC_ORE_TAG) || state.is(Blocks.OBSIDIAN)) {
             toBreak.add(pos);

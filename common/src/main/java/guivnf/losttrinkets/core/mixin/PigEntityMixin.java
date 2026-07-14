@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,10 +34,10 @@ public abstract class PigEntityMixin extends Animal {
         if (held.is(Items.SADDLE) || self.isFood(held))
             return;
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.PIGGY.get())) {
-            if (!self.level().isClientSide) {
+            if (!self.level().isClientSide()) {
                 player.startRiding(self);
             }
-            cir.setReturnValue(InteractionResult.sidedSuccess(self.level().isClientSide));
+            cir.setReturnValue(InteractionResult.SUCCESS);
         }
     }
 
@@ -53,10 +53,12 @@ public abstract class PigEntityMixin extends Animal {
         }
     }
 
-    @Inject(method = "getSaddledSpeed", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getRiddenSpeed", at = @At("RETURN"), cancellable = true)
     private void losttrinkets$modifySaddledSpeed(Player player, CallbackInfoReturnable<Float> cir) {
+        // MC 26.1's getRiddenSpeed returns a much smaller value than the old getSaddledSpeed
+        // (movementSpeed * 0.225 * boost), so scale the current speed instead of hard-setting it.
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.PIGGY.get())) {
-            cir.setReturnValue(0.45F);
+            cir.setReturnValue(cir.getReturnValueF() * 2.0F);
         }
     }
 }

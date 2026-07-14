@@ -1,7 +1,7 @@
 package guivnf.losttrinkets.client.screen;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import guivnf.losttrinkets.LostTrinkets;
@@ -91,11 +91,10 @@ public class TrinketsScreen extends AbstractLTScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics, mx, my, pt);
-        super.render(guiGraphics, mx, my, pt);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mx, int my, float pt) {
+        super.extractRenderState(guiGraphics, mx, my, pt);
         String s = getTitle().getString();
-        guiGraphics.drawString(this.font, s, this.width / 2 - this.font.width(s) / 2, this.y - 20, 0x999999);
+        guiGraphics.text(this.font, s, this.width / 2 - this.font.width(s) / 2, this.y - 20, 0xFF999999);
         for (TrinketButton btn : this.trinketButtons) {
             if (btn.isHovered()) {
                 ITrinket trinket = btn.trinket;
@@ -106,7 +105,7 @@ public class TrinketsScreen extends AbstractLTScreen {
                         .translatable(
                                 "gui.losttrinkets.rarity." + trinket.getRarity().name().toLowerCase(Locale.ENGLISH))
                         .withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
-                guiGraphics.renderComponentTooltip(this.font, list, mx, my);
+                guiGraphics.setComponentTooltipForNextFrame(this.font, list, mx, my);
                 break;
             }
         }

@@ -3,7 +3,7 @@ package guivnf.losttrinkets.client.network;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -56,7 +56,7 @@ public class ClientPacketHandlers {
 
     public static void handleTrinketUnlocked(TrinketUnlockedPacket msg, NetworkManager.PacketContext ctx) {
         MC.player().ifPresent(player -> {
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(msg.getKey()));
+            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(msg.getKey()));
             if (item instanceof ITrinket) {
                 HudHandler.add(new Toast((ITrinket) item));
                 player.playSound(Sounds.UNLOCK.get(), 1.0F, 1.0F);

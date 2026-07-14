@@ -7,31 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## 21.1.3 - 2026-05-30
+## 26.1.0 - 2026-07-13
 
 ### Added
-  - Chinese (zh_cn) translation
+  - New command `/losttrinkets unlock <targets> trinket <id>` to grant a specific trinket to players.
+  - Spanish translations (Spain and Latin America).
 
-### Fixed
-  - Multiplayer crash when right-clicking air on servers without Lost Trinkets (Magneto C2S packet now skips when the server hasn't advertised the channel)
-  - Dragon Breath trinket only producing a single smelted ingot from ores that drop multiple items (e.g. copper); output now scales with the input stack size
-  - Book O' Enchanting now grants the equivalent of a max enchanting setup on modded enchanting tables (e.g. Apothic Enchanting) instead of always capping at level 30
-  - Treble Hooks no longer rolls fishing loot when the rod hooks an entity (mobs, players, fish-mobs like Cod/Salmon) or when an empty rod is retrieved; only actual fish catches are multiplied
-
-## 21.1.2 - 2026-04-19
-
-### Fixed
-  - Dedicated server crash
-  - other mixin issues with Artifacts
-
-## 21.1.1 - 2026-04-19
-
-### Fixed
-  - Neoforge Crash
-  - Trinkets & probably some other mods. Thanks to unilock PR #1
-
-## 21.1.0 - 2026-04-1
-
-### Added
-  - Support for multiloader(Forge/Fabric)
-  - Ported to 1.21.1
+### Changed
+  - Ported to Minecraft 26.1.2 (new CalVer scheme) on Java 25, keeping NeoForge + Fabric multiloader support.
+  - Updated to the unobfuscated 26.1 toolchain (Architectury Loom no-remap, Gradle 9) and refreshed all dependencies (NeoForge, Fabric API, Architectury, Curios, JEI, Forge Config API Port).
+  - Reworked GUI rendering onto Minecraft 26.1's extract-based pipeline.
+  - Updated the mod icon.

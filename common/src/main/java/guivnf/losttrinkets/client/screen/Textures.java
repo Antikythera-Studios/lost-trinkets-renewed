@@ -1,6 +1,6 @@
 package guivnf.losttrinkets.client.screen;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import guivnf.losttrinkets.LostTrinkets;
 
 public class Textures {
@@ -13,7 +13,7 @@ public class Textures {
     public static final Texture TRINKET_NEXT = register("trinket", 26, 15, 26, 26);
 
     static Texture register(String path, int width, int height, int u, int v) {
-        return new Texture(ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, "textures/gui/" + path + ".png"), u, v, width,
+        return new Texture(Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "textures/gui/" + path + ".png"), u, v, width,
                 height, 256, 256);
     }
 }

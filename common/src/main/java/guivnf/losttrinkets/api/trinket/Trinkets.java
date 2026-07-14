@@ -4,7 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -36,7 +36,7 @@ public class Trinkets {
         ListTag availableTrinkets = new ListTag();
         this.available.forEach((trinket) -> {
             CompoundTag nbt1 = new CompoundTag();
-            ResourceLocation location = BuiltInRegistries.ITEM.getKey(trinket.getItem());
+            Identifier location = BuiltInRegistries.ITEM.getKey(trinket.getItem());
             Objects.requireNonNull(location);
             nbt1.putString("trinket", location.toString());
             availableTrinkets.add(nbt1);
@@ -46,7 +46,7 @@ public class Trinkets {
         ListTag activeTrinkets = new ListTag();
         this.active.forEach((trinket) -> {
             CompoundTag nbt1 = new CompoundTag();
-            ResourceLocation location = BuiltInRegistries.ITEM.getKey(trinket.getItem());
+            Identifier location = BuiltInRegistries.ITEM.getKey(trinket.getItem());
             Objects.requireNonNull(location);
             nbt1.putString("trinket", location.toString());
             activeTrinkets.add(nbt1);
@@ -56,26 +56,26 @@ public class Trinkets {
     }
 
     public void deserializeNBT(CompoundTag nbt) {
-        this.slots = nbt.getInt("slots");
-        this.slotsSet = nbt.getBoolean("slots_set");
-        ListTag availableTrinkets = nbt.getList("available_trinkets", Tag.TAG_COMPOUND);
+        this.slots = nbt.getIntOr("slots", 0);
+        this.slotsSet = nbt.getBooleanOr("slots_set", false);
+        ListTag availableTrinkets = nbt.getListOrEmpty("available_trinkets");
         this.available.clear();
 
         for (int i = 0; i < availableTrinkets.size(); i++) {
-            CompoundTag nbt1 = availableTrinkets.getCompound(i);
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(nbt1.getString("trinket")));
+            CompoundTag nbt1 = availableTrinkets.getCompoundOrEmpty(i);
+            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(nbt1.getStringOr("trinket", "")));
             if (item instanceof ITrinket) {
                 this.available.add((ITrinket) item);
             }
         }
 
-        ListTag activeTrinkets = nbt.getList("active_trinkets", Tag.TAG_COMPOUND);
+        ListTag activeTrinkets = nbt.getListOrEmpty("active_trinkets");
         this.active.clear();
         this.tickable.clear();
         this.targeting.clear();
         for (int i = 0; i < activeTrinkets.size(); i++) {
-            CompoundTag nbt1 = activeTrinkets.getCompound(i);
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(nbt1.getString("trinket")));
+            CompoundTag nbt1 = activeTrinkets.getCompoundOrEmpty(i);
+            Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(nbt1.getStringOr("trinket", "")));
             if (item instanceof ITrinket) {
                 ITrinket trinket = (ITrinket) item;
                 if (this.active.size() < this.slots) {

@@ -1,10 +1,10 @@
 package guivnf.losttrinkets.network;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface LTPacket {
-    ResourceLocation getId();
+    Identifier getId();
 
     void write(RegistryFriendlyByteBuf buf);
 }

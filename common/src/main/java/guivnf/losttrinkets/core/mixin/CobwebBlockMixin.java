@@ -17,7 +17,8 @@ import guivnf.losttrinkets.item.Itms;
 public class CobwebBlockMixin {
     @Inject(method = "entityInside", at = @At("HEAD"), cancellable = true)
     private void losttrinkets$glassShard(BlockState state, Level level, BlockPos pos,
-            Entity entity, CallbackInfo ci) {
+            Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier applier, boolean flag,
+            CallbackInfo ci) {
         if (!level.isClientSide() && entity instanceof Player player) {
             if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.GLASS_SHARDS.get())) {
                 level.destroyBlock(pos, false, player);

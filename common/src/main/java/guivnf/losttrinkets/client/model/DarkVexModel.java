@@ -1,15 +1,14 @@
 package guivnf.losttrinkets.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
-import guivnf.losttrinkets.entity.DarkVexEntity;
+import net.minecraft.world.entity.HumanoidArm;
+import guivnf.losttrinkets.client.render.entity.DarkVexRenderState;
 
-public class DarkVexModel extends EntityModel<DarkVexEntity> {
+public class DarkVexModel extends EntityModel<DarkVexRenderState> {
     private final ModelPart head;
     private final ModelPart body;
     private final ModelPart right_arm;
@@ -18,6 +17,7 @@ public class DarkVexModel extends EntityModel<DarkVexEntity> {
     private final ModelPart right_wing;
 
     public DarkVexModel(ModelPart root) {
+        super(root);
         this.head = root.getChild("head");
         this.body = root.getChild("body");
         this.right_arm = root.getChild("right_arm");
@@ -65,34 +65,25 @@ public class DarkVexModel extends EntityModel<DarkVexEntity> {
     }
 
     @Override
-    public void setupAnim(DarkVexEntity entity, float limbSwing, float limbSwingAmount,
-            float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.yRot = netHeadYaw * (float) Math.PI / 180F;
-        this.head.xRot = headPitch * (float) Math.PI / 180F;
+    public void setupAnim(DarkVexRenderState state) {
+        super.setupAnim(state);
+        this.head.yRot = state.yRot * (float) Math.PI / 180F;
+        this.head.xRot = state.xRot * (float) Math.PI / 180F;
 
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+        this.right_arm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F + (float) Math.PI) * 2.0F
+                * state.walkAnimationSpeed * 0.5F;
+        this.left_arm.xRot = Mth.cos(state.walkAnimationPos * 0.6662F) * 2.0F * state.walkAnimationSpeed * 0.5F;
 
-        if (entity.isCharging()) {
-            if (entity.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT) {
+        if (state.isCharging) {
+            if (state.mainArm == HumanoidArm.RIGHT) {
                 this.right_arm.xRot = 3.7699115F;
             } else {
                 this.left_arm.xRot = 3.7699115F;
             }
         }
 
-        this.right_wing.yRot = 0.47123894F + Mth.cos(ageInTicks * 0.8F) * (float) Math.PI * 0.05F;
+        this.right_wing.yRot = 0.47123894F + Mth.cos(state.ageInTicks * 0.8F) * (float) Math.PI * 0.05F;
         this.left_wing.yRot = -this.right_wing.yRot;
     }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer,
-            int packedLight, int packedOverlay, int color) {
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        left_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_wing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
+    // MC 26.1: Model#renderToBuffer is final and renders the root part passed to super(root).
 }

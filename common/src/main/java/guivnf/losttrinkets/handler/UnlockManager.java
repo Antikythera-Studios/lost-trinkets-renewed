@@ -4,7 +4,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -87,11 +87,11 @@ public class UnlockManager {
                     data.unlockDelay = Configs.GENERAL.unlockCooldown;
                 }
                 if (doNotification) {
-                    ResourceLocation rl = BuiltInRegistries.ITEM.getKey(trinket.getItem());
+                    Identifier rl = BuiltInRegistries.ITEM.getKey(trinket.getItem());
                     LostTrinkets.NET.toClient(new TrinketUnlockedPacket(Objects.requireNonNull(rl).toString()), player);
                     ItemStack stack = new ItemStack(trinket.getItem());
-                    HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_ITEM,
-                            new HoverEvent.ItemStackInfo(stack));
+                    HoverEvent hoverEvent = new HoverEvent.ShowItem(
+                            new net.minecraft.world.item.ItemStackTemplate(trinket.getItem()));
                     Component trinketName = stack.getHoverName().copy().withStyle(s -> s.withHoverEvent(hoverEvent));
                     Component msg = Component.translatable("chat.losttrinkets.unlocked.trinket",
                             player.getDisplayName(), trinketName);
@@ -109,17 +109,17 @@ public class UnlockManager {
     public static void refresh() {
         init();
 
-        Set<ResourceLocation> banned = Configs.GENERAL.blackList.stream()
-                .map(ResourceLocation::parse)
+        Set<Identifier> banned = Configs.GENERAL.blackList.stream()
+                .map(Identifier::parse)
                 .collect(Collectors.toCollection(Sets::newLinkedHashSet));
-        Set<ResourceLocation> nonRandom = Configs.GENERAL.nonRandom.stream()
-                .map(ResourceLocation::parse)
+        Set<Identifier> nonRandom = Configs.GENERAL.nonRandom.stream()
+                .map(Identifier::parse)
                 .collect(Collectors.toCollection(Sets::newLinkedHashSet));
-        Set<ResourceLocation> seen = Sets.newLinkedHashSet();
+        Set<Identifier> seen = Sets.newLinkedHashSet();
 
         LostTrinkets.LOGGER.info("Gathering Trinkets...");
         ALL_TRINKETS.forEach(trinket -> {
-            ResourceLocation rl = BuiltInRegistries.ITEM.getKey(trinket.getItem());
+            Identifier rl = BuiltInRegistries.ITEM.getKey(trinket.getItem());
             seen.add(rl);
             if (banned.contains(rl)) {
                 TRINKETS.remove(trinket);

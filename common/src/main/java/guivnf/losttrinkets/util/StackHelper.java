@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class StackHelper {
     public static void drop(Entity entity, ItemStack stack) {
-        if (entity.level().isClientSide)
+        if (entity.level().isClientSide())
             return;
         ItemEntity itemEntity = new ItemEntity(
                 entity.level(),

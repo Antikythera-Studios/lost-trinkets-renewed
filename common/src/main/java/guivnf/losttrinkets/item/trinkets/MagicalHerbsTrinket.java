@@ -30,7 +30,7 @@ public class MagicalHerbsTrinket extends Trinket<MagicalHerbsTrinket> {
 
     @Override
     public void onActivated(Level level, BlockPos pos, Player player) {
-        if (level.isClientSide)
+        if (level.isClientSide())
             return;
         List<Holder<MobEffect>> toRemove = player.getActiveEffectsMap().keySet().stream()
                 .filter(e -> e.value().getCategory() == MobEffectCategory.HARMFUL || e == MobEffects.BAD_OMEN)

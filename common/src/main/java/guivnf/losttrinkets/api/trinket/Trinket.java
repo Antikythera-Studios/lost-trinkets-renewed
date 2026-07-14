@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.client.util.MC;
@@ -36,31 +36,35 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (LostTrinketsAPI.get().unlock(player, this)) {
             ItemStack stack = player.getItemInHand(hand);
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
         return super.use(level, player, hand);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+            net.minecraft.world.item.component.TooltipDisplay display,
+            java.util.function.Consumer<Component> tooltip, TooltipFlag flag) {
+        java.util.List<Component> lines = new java.util.ArrayList<>();
         if (LostTrinketsAPI.get().isDisabled(this)) {
-            tooltip.add(Component.translatable("gui.losttrinkets.status.disabled").withStyle(ChatFormatting.DARK_RED));
+            lines.add(Component.translatable("gui.losttrinkets.status.disabled").withStyle(ChatFormatting.DARK_RED));
         } else {
             Player player = MC.player().orElse(null);
             if (player != null && LostTrinketsAPI.getTrinkets(player).has(this)) {
-                tooltip.add(Component.translatable("gui.losttrinkets.status.owned").withStyle(ChatFormatting.BLUE));
+                lines.add(Component.translatable("gui.losttrinkets.status.owned").withStyle(ChatFormatting.BLUE));
             } else if (LostTrinketsAPI.get().isNonRandom(this)) {
-                tooltip.add(Component.translatable("gui.losttrinkets.status.non_random").withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(Component.translatable("gui.losttrinkets.status.non_random").withStyle(ChatFormatting.DARK_GRAY));
             }
         }
-        addTrinketDescription(stack, tooltip);
-        tooltip.add(Component.translatable("gui.losttrinkets.rarity." + getRarity().name().toLowerCase(Locale.ENGLISH)).withStyle(ChatFormatting.DARK_GRAY));
+        addTrinketDescription(stack, lines);
+        lines.add(Component.translatable("gui.losttrinkets.rarity." + getRarity().name().toLowerCase(Locale.ENGLISH)).withStyle(ChatFormatting.DARK_GRAY));
+        lines.forEach(tooltip);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
     @SuppressWarnings("unchecked")
     public T add(Holder<Attribute> attribute, String uuid, double amount) {
         AttributeModifier modifier = new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(LostTrinkets.MOD_ID, uuid),
+                Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, uuid),
                 amount, AttributeModifier.Operation.ADD_VALUE);
         getAttributes().put(attribute, modifier);
         return (T) this;

@@ -27,7 +27,7 @@ public class MagicalFeathersTrinket extends Trinket<MagicalFeathersTrinket> impl
         }
         if (!data.allowFlying) {
             data.allowFlying = true;
-            if (!level.isClientSide && player instanceof ServerPlayer sp) {
+            if (!level.isClientSide() && player instanceof ServerPlayer sp) {
 
                 sp.onUpdateAbilities();
                 LostTrinkets.NET.toClient(new SyncFlyPacket(true), player);
@@ -43,7 +43,7 @@ public class MagicalFeathersTrinket extends Trinket<MagicalFeathersTrinket> impl
             player.getAbilities().mayfly = false;
             player.getAbilities().flying = false;
             data.allowFlying = false;
-            if (!level.isClientSide && player instanceof ServerPlayer sp) {
+            if (!level.isClientSide() && player instanceof ServerPlayer sp) {
                 sp.onUpdateAbilities();
                 LostTrinkets.NET.toClient(new SyncFlyPacket(false), player);
             }

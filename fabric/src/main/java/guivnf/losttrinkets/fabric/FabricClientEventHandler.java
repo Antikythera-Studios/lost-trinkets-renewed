@@ -8,8 +8,8 @@ import net.minecraft.world.InteractionHand;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
+import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import guivnf.losttrinkets.client.handler.KeyHandler;
 import guivnf.losttrinkets.client.handler.hud.HudHandler;
 import guivnf.losttrinkets.client.model.DarkVexModel;
@@ -48,9 +48,9 @@ public class FabricClientEventHandler {
             }
         });
 
-        KeyBindingHelper.registerKeyBinding(KeyHandler.TRINKET_GUI);
-        KeyBindingHelper.registerKeyBinding(KeyHandler.MAGNETO);
+        KeyMappingRegistry.register(KeyHandler.TRINKET_GUI);
+        KeyMappingRegistry.register(KeyHandler.MAGNETO);
 
-        EntityModelLayerRegistry.registerModelLayer(DarkVexModelLayer.DARK_VEX, DarkVexModel::createBodyLayer);
+        EntityModelLayerRegistry.register(DarkVexModelLayer.DARK_VEX, DarkVexModel::createBodyLayer);
     }
 }

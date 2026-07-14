@@ -10,7 +10,8 @@ import guivnf.losttrinkets.client.util.MC;
 import guivnf.losttrinkets.item.trinkets.MagnetoTrinket;
 
 public class KeyHandler {
-    public static final String TRINKET_CATEGORY = "key.categories.losttrinkets";
+    public static final KeyMapping.Category TRINKET_CATEGORY = new KeyMapping.Category(
+            net.minecraft.resources.Identifier.fromNamespaceAndPath(guivnf.losttrinkets.LostTrinkets.MOD_ID, "trinkets"));
     public static final KeyMapping TRINKET_GUI = new KeyMapping(
             "key.losttrinkets.trinket",
             InputConstants.Type.KEYSYM,

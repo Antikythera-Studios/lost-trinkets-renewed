@@ -1,11 +1,11 @@
 package guivnf.losttrinkets.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class Texture {
-    private final ResourceLocation location;
+    private final Identifier location;
     private final int u;
     private final int v;
     private final int width;
@@ -13,11 +13,11 @@ public class Texture {
     private final int textureWidth;
     private final int textureHeight;
 
-    public Texture(ResourceLocation location, int u, int v, int width, int height) {
+    public Texture(Identifier location, int u, int v, int width, int height) {
         this(location, u, v, width, height, 256, 256);
     }
 
-    public Texture(ResourceLocation location, int u, int v, int width, int height, int textureWidth,
+    public Texture(Identifier location, int u, int v, int width, int height, int textureWidth,
             int textureHeight) {
         this.location = location;
         this.u = u;
@@ -28,11 +28,12 @@ public class Texture {
         this.textureHeight = textureHeight;
     }
 
-    public void draw(GuiGraphics graphics, int x, int y) {
-        graphics.blit(location, x, y, u, v, width, height, textureWidth, textureHeight);
+    public void draw(GuiGraphicsExtractor graphics, int x, int y) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, location, x, y, (float) u, (float) v,
+                width, height, textureWidth, textureHeight);
     }
 
-    public ResourceLocation getLocation() {
+    public Identifier getLocation() {
         return location;
     }
 

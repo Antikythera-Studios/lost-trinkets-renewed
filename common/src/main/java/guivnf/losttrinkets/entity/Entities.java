@@ -19,5 +19,8 @@ public class Entities {
                                                         .sized(0.4F, 0.8F)
                                                         .clientTrackingRange(3)
                                                         .updateInterval(80)
-                                                        .build("dark_vex"));
+                                                        .build(net.minecraft.resources.ResourceKey.create(
+                                                                        Registries.ENTITY_TYPE,
+                                                                        net.minecraft.resources.Identifier.fromNamespaceAndPath(
+                                                                                        LostTrinkets.MOD_ID, "dark_vex"))));
 }

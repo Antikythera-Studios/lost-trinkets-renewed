@@ -1,6 +1,6 @@
 package guivnf.losttrinkets.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -43,18 +43,17 @@ public class TrinketOptionScreen extends AbstractLTScreen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mx, int my, float pt) {
-        renderBackground(guiGraphics, mx, my, pt);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mx, int my, float pt) {
+        super.extractRenderState(guiGraphics, mx, my, pt);
         int x = this.width / 2 - 8;
         int y = this.height / 3 - 8;
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x - 16.0F, y - 16.0F, 0.0F);
-        guiGraphics.pose().scale(3.0F, 3.0F, 1.0F);
-        guiGraphics.renderFakeItem(new ItemStack(this.trinket.getItem()), 0, 0);
-        guiGraphics.pose().popPose();
-        super.render(guiGraphics, mx, my, pt);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x - 16.0F, y - 16.0F);
+        guiGraphics.pose().scale(3.0F, 3.0F);
+        guiGraphics.fakeItem(new ItemStack(this.trinket.getItem()), 0, 0);
+        guiGraphics.pose().popMatrix();
         String name = Component.translatable(this.trinket.getItem().getDescriptionId()).getString();
-        guiGraphics.drawString(this.font, name, 8 + x - this.font.width(name) / 2, y + 32, 0x999999, false);
+        guiGraphics.text(this.font, name, 8 + x - this.font.width(name) / 2, y + 32, 0xFF999999, false);
     }
 
     @Override

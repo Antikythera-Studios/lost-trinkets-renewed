@@ -6,7 +6,7 @@ import guivnf.losttrinkets.entity.Entities;
 public class EntityRenderer {
     public static void register() {
 
-        if (!dev.architectury.platform.Platform.isForge()) {
+        if (!dev.architectury.platform.Platform.isNeoForge()) {
             EntityRendererRegistry.register(Entities.DARK_VEX, DarkVexRenderer::new);
         }
     }

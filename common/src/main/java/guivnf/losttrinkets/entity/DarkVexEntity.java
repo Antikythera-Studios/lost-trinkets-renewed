@@ -101,7 +101,7 @@ public class DarkVexEntity extends DarkEntity {
 
     @Override
     public void playAmbientSound() {
-        if (this.random.nextInt(7) == 0) {
+        if (this.getRandom().nextInt(7) == 0) {
             super.playAmbientSound();
         }
     }
@@ -129,9 +129,9 @@ public class DarkVexEntity extends DarkEntity {
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
-            MobSpawnType spawnType, @Nullable SpawnGroupData data) {
-        populateDefaultEquipmentSlots(this.random, difficulty);
-        populateDefaultEquipmentEnchantments(level, this.random, difficulty);
+            EntitySpawnReason spawnType, @Nullable SpawnGroupData data) {
+        populateDefaultEquipmentSlots(this.getRandom(), difficulty);
+        populateDefaultEquipmentEnchantments(level, this.getRandom(), difficulty);
         return super.finalizeSpawn(level, difficulty, spawnType, data);
     }
 
@@ -151,7 +151,7 @@ public class DarkVexEntity extends DarkEntity {
         public boolean canUse() {
             return DarkVexEntity.this.getTarget() != null
                     && !DarkVexEntity.this.getMoveControl().hasWanted()
-                    && DarkVexEntity.this.random.nextInt(7) == 0
+                    && DarkVexEntity.this.getRandom().nextInt(7) == 0
                     && DarkVexEntity.this.distanceToSqr(DarkVexEntity.this.getTarget()) > 4.0D;
         }
 
@@ -184,7 +184,7 @@ public class DarkVexEntity extends DarkEntity {
             LivingEntity target = DarkVexEntity.this.getTarget();
             if (target != null) {
                 if (DarkVexEntity.this.getBoundingBox().intersects(target.getBoundingBox())) {
-                    DarkVexEntity.this.doHurtTarget(target);
+                    DarkVexEntity.this.doHurtTarget((net.minecraft.server.level.ServerLevel) DarkVexEntity.this.level(), target);
                     DarkVexEntity.this.setCharging(false);
                 } else {
                     double distSq = DarkVexEntity.this.distanceToSqr(target);
@@ -237,7 +237,7 @@ public class DarkVexEntity extends DarkEntity {
 
         @Override
         public boolean canUse() {
-            return !DarkVexEntity.this.getMoveControl().hasWanted() && DarkVexEntity.this.random.nextInt(7) == 0;
+            return !DarkVexEntity.this.getMoveControl().hasWanted() && DarkVexEntity.this.getRandom().nextInt(7) == 0;
         }
 
         @Override
@@ -253,9 +253,9 @@ public class DarkVexEntity extends DarkEntity {
             }
             for (int i = 0; i < 3; ++i) {
                 BlockPos pos = origin.offset(
-                        DarkVexEntity.this.random.nextInt(15) - 7,
-                        DarkVexEntity.this.random.nextInt(11) - 5,
-                        DarkVexEntity.this.random.nextInt(15) - 7);
+                        DarkVexEntity.this.getRandom().nextInt(15) - 7,
+                        DarkVexEntity.this.getRandom().nextInt(11) - 5,
+                        DarkVexEntity.this.getRandom().nextInt(15) - 7);
                 if (DarkVexEntity.this.level().isEmptyBlock(pos)) {
                     DarkVexEntity.this.moveControl.setWantedPosition(pos.getX() + 0.5D, pos.getY() + 0.5D,
                             pos.getZ() + 0.5D, 0.25D);

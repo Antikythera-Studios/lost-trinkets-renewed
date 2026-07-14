@@ -55,9 +55,9 @@ public class TargetHandler {
 
             if (mob instanceof NeutralMob) {
                 NeutralMob angerable = (NeutralMob) mob;
-                UUID targetUUID = angerable.getPersistentAngerTarget();
-                if (targetUUID != null) {
-                    Player targetPlayer = (Player) mob.level().getPlayerByUUID(targetUUID);
+                net.minecraft.world.entity.EntityReference<LivingEntity> targetRef = angerable.getPersistentAngerTarget();
+                if (targetRef != null) {
+                    Player targetPlayer = (Player) mob.level().getPlayerByUUID(targetRef.getUUID());
                     if (preventTargeting(mob, targetPlayer)) {
                         angerable.stopBeingAngry();
                     }
