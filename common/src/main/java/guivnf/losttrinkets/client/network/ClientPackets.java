@@ -29,7 +29,7 @@ public class ClientPackets {
 
     private static void handleSyncData(SyncDataPacket msg, NetworkManager.PacketContext ctx) {
         Minecraft mc = Minecraft.getInstance();
-        // prefer mc.player for local UUID — world.getPlayerByUUID can miss the local
+        // prefer mc.player for local UUID, world.getPlayerByUUID can miss the local
         // player right after respawn/dimension-change before the entity is tracked.
         if (mc.player != null && mc.player.getUUID().equals(msg.uuid)) {
             LostTrinketsAPI.getData(mc.player).deserializeNBT(msg.nbt);

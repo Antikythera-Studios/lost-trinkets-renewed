@@ -95,7 +95,7 @@ public class ForgeClientEventHandler {
         event.registerLayerDefinition(DarkVexModelLayer.DARK_VEX, DarkVexModel::createBodyLayer);
     }
 
-    // called from mod event bus — must happen at EntityRenderersEvent time, before FMLClientSetupEvent
+    // called from mod event bus, must happen at EntityRenderersEvent time, before FMLClientSetupEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(guivnf.losttrinkets.entity.Entities.DARK_VEX.get(),
                 guivnf.losttrinkets.client.render.entity.DarkVexRenderer::new);

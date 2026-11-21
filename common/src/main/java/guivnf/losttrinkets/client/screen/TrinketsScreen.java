@@ -59,7 +59,7 @@ public class TrinketsScreen extends AbstractLTScreen {
                                 button -> {
                                     if (locked) {
                                         LostTrinkets.NET.toServer(new UnlockSlotPacket());
-                                        // optimistic client-side update — button is only active when canAfford,
+                                        // optimistic client-side update, button is only active when canAfford,
                                         // so the server will accept; sync packet corrects on rejection anyway.
                                         LostTrinketsAPI.getTrinkets(this.minecraft.player).unlockSlot();
                                         this.minecraft.setScreen(new TrinketsScreen());

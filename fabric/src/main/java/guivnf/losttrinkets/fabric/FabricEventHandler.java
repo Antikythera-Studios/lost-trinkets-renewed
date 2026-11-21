@@ -33,7 +33,7 @@ public class FabricEventHandler {
             return EventResult.pass();
         });
 
-        // EntityEvent.LIVING_TICK doesn't exist in Architectury 9.x — living tick
+        // EntityEvent.LIVING_TICK doesn't exist in Architectury 9.x, living tick
         // handled via mixin
 
         EntityEvent.LIVING_HURT.register((entity, source, amount) -> {
@@ -68,7 +68,7 @@ public class FabricEventHandler {
 
         PlayerEvent.PLAYER_RESPAWN.register((player, conqueredEnd) -> DataManager.respawn(player));
 
-        // AFTER_PLAYER_CHANGE_WORLD fires after dimension transfer — Architectury 9.x
+        // AFTER_PLAYER_CHANGE_WORLD fires after dimension transfer, Architectury 9.x
         // has no CHANGE_DIMENSION event
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD
                 .register((player, origin, destination) -> DataManager.changedDimension(player));

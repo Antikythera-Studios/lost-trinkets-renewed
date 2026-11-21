@@ -38,7 +38,7 @@ public class FabricClientEventHandler {
             }
         });
 
-        // populate trinket registry on client start — fixes "Disabled" tooltip on Fabric
+        // populate trinket registry on client start, fixes "Disabled" tooltip on Fabric
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> UnlockManager.init());
 
         KeyBindingHelper.registerKeyBinding(KeyHandler.TRINKET_GUI);

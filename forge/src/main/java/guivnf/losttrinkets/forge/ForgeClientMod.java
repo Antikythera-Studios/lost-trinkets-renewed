@@ -4,7 +4,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import guivnf.losttrinkets.client.network.ClientPackets;
 import guivnf.losttrinkets.client.render.entity.EntityRenderer;
-import guivnf.losttrinkets.client.render.tile.TileRenderer;
 import guivnf.losttrinkets.client.screen.Screens;
 
 public class ForgeClientMod {
@@ -21,7 +20,6 @@ public class ForgeClientMod {
         event.enqueueWork(() -> {
             ClientPackets.register();
             EntityRenderer.register();
-            TileRenderer.register();
             Screens.register();
         });
     }

@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.client.network.ClientPackets;
 import guivnf.losttrinkets.client.render.entity.EntityRenderer;
-import guivnf.losttrinkets.client.render.tile.TileRenderer;
 import guivnf.losttrinkets.client.screen.Screens;
 
 public class LostTrinketsFabricClientMod implements ClientModInitializer {
@@ -21,7 +20,6 @@ public class LostTrinketsFabricClientMod implements ClientModInitializer {
         );
         ClientPackets.register();
         EntityRenderer.register();
-        TileRenderer.register();
         Screens.register();
         FabricClientEventHandler.register();
     }

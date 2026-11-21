@@ -1,0 +1,37 @@
+name: ✨ Feature Request
+description: Share a feature request or suggestion for Lost Trinkets, such as a new trinket.
+title: "[Feature]: "
+labels: [ "enhancement" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your suggestion!
+
+        Make sure you have searched the [existing issues](https://github.com/Antikythera-Studios/lost-trinkets-renewed/issues) before submitting a new one.
+
+        To help us understand your idea, please include:
+
+        1. **Feature / Suggestion:** what you'd like to see added or changed.
+        2. **Motivation:** why it would be useful or improve the experience.
+        3. **Optional:** any references, images, or examples.
+
+        > [!NOTE]
+        > New features are made for the latest version first, and are not always backported to older Minecraft versions.
+  - type: textarea
+    id: description
+    attributes:
+      label: Details
+      description: Provide a clear explanation of your feature request or suggestion.
+      placeholder: |
+        A new trinket that slowly repairs the item in your main hand...
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Antikythera-Studios/lost-trinkets-renewed/blob/HEAD/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

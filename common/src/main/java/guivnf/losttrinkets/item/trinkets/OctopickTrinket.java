@@ -78,7 +78,7 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
         if (toBreak.size() > 1) {
             toBreak.forEach(breakPos -> {
                 if (breakPos.equals(pos))
-                    return; // skip original block — vanilla handles it
+                    return; // skip original block, vanilla handles it
                 BlockState breakState = level.getBlockState(breakPos);
                 if (player.hasCorrectToolForDrops(breakState)) {
                     if (player.gameMode.destroyBlock(breakPos)) {

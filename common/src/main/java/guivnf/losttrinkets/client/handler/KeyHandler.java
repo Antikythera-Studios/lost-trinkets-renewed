@@ -51,7 +51,7 @@ public class KeyHandler {
 
         // Fallback when magneto key is unbound: right-click with empty main hand in air.
         // The vanilla client never sends ServerboundUseItemPacket for empty-hand MISS,
-        // so server-side events don't fire — we must detect it client-side and send the packet.
+        // so server-side events don't fire, we must detect it client-side and send the packet.
         Minecraft mc = Minecraft.getInstance();
         boolean useKeyDown = mc.options.keyUse.isDown();
         if (useKeyDown && !prevUseKeyDown
