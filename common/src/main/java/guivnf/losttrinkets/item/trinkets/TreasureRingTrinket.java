@@ -12,17 +12,13 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.trinket.Rarity;
 import guivnf.losttrinkets.api.trinket.Trinket;
-import guivnf.losttrinkets.item.Itms;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TreasureRingTrinket extends Trinket<TreasureRingTrinket> {
-    public static final List<ResourceKey<LootTable>> LOOTS = Arrays.asList(
+    public static final List<ResourceKey<LootTable>> LOOTS = List.of(
             BuiltInLootTables.NETHER_BRIDGE,
             BuiltInLootTables.JUNGLE_TEMPLE,
             BuiltInLootTables.BURIED_TREASURE,
@@ -39,25 +35,19 @@ public class TreasureRingTrinket extends Trinket<TreasureRingTrinket> {
         super(rarity, properties);
     }
 
-    private static boolean isBossMob(LivingEntity entity) {
-        return entity instanceof EnderDragon || entity instanceof WitherBoss;
-    }
-
-    public static List<ItemStack> getExtraDrops(Player player, LivingEntity target) {
-        if (!LostTrinketsAPI.getTrinkets(player).isActive(Itms.TREASURE_RING.get()))
-            return Collections.emptyList();
-        if (!isBossMob(target))
-            return Collections.emptyList();
-        if (!(player.level() instanceof ServerLevel serverLevel))
-            return Collections.emptyList();
-
+    @Override
+    public void addKillDrops(Player owner, LivingEntity target, List<ItemStack> drops) {
+        if (!(target instanceof EnderDragon || target instanceof WitherBoss))
+            return;
+        if (!(owner.level() instanceof ServerLevel serverLevel))
+            return;
         ResourceKey<LootTable> lootTableId = LOOTS.get(serverLevel.random.nextInt(LOOTS.size()));
         LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootTableId);
         LootParams params = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.ORIGIN, target.position())
-                .withParameter(LootContextParams.THIS_ENTITY, player)
-                .withLuck(player.getLuck())
+                .withParameter(LootContextParams.THIS_ENTITY, owner)
+                .withLuck(owner.getLuck())
                 .create(LootContextParamSets.CHEST);
-        return lootTable.getRandomItems(params);
+        drops.addAll(lootTable.getRandomItems(params));
     }
 }

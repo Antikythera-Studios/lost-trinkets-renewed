@@ -131,20 +131,20 @@ public class Itms {
                         () -> new TreasureRingTrinket(Rarity.EPIC, new Item.Properties()));
         public static final RegistrySupplier<OctopickTrinket> OCTOPICK = reg("octopick",
                         () -> new OctopickTrinket(Rarity.EPIC, new Item.Properties()));
-        public static final RegistrySupplier<Trinket> SILVER_NAIL = reg("silver_nail",
-                        () -> new Trinket(Rarity.EPIC, new Item.Properties()));
-        public static final RegistrySupplier<Trinket> GLORY_SHARDS = reg("glory_shards",
-                        () -> new Trinket(Rarity.EPIC, new Item.Properties()));
+        public static final RegistrySupplier<SilverNailTrinket> SILVER_NAIL = reg("silver_nail",
+                        () -> new SilverNailTrinket(Rarity.EPIC, new Item.Properties()));
+        public static final RegistrySupplier<GloryShardsTrinket> GLORY_SHARDS = reg("glory_shards",
+                        () -> new GloryShardsTrinket(Rarity.EPIC, new Item.Properties()));
 
         public static final RegistrySupplier<Trinket> ASH_GLOVES = reg("ash_gloves",
                         () -> new Trinket(Rarity.LEGENDARY, new Item.Properties())
                                         .add(Attributes.ATTACK_SPEED, "1a71bd06-0d8b-459e-b961-fbd992d61c5d", 1024.0D));
         public static final RegistrySupplier<RubyHeartTrinket> RUBY_HEART = reg("ruby_heart",
                         () -> new RubyHeartTrinket(Rarity.LEGENDARY, new Item.Properties()));
-        public static final RegistrySupplier<Trinket> GOLDEN_HORSESHOE = reg("golden_horseshoe",
-                        () -> new Trinket(Rarity.LEGENDARY, new Item.Properties()));
-        public static final RegistrySupplier<Trinket> GOLDEN_TOOTH = reg("golden_tooth",
-                        () -> new Trinket(Rarity.LEGENDARY, new Item.Properties()));
+        public static final RegistrySupplier<GoldenHorseshoeTrinket> GOLDEN_HORSESHOE = reg("golden_horseshoe",
+                        () -> new GoldenHorseshoeTrinket(Rarity.LEGENDARY, new Item.Properties()));
+        public static final RegistrySupplier<GoldenToothTrinket> GOLDEN_TOOTH = reg("golden_tooth",
+                        () -> new GoldenToothTrinket(Rarity.LEGENDARY, new Item.Properties()));
         public static final RegistrySupplier<Trinket> BROKEN_HEART_1 = reg("broken_heart_1",
                         () -> new Trinket(Rarity.LEGENDARY, new Item.Properties())
                                         .add(Attributes.MAX_HEALTH, "092962d0-2711-48e0-9a84-f768ea4aeeb2", 4.0D));
@@ -168,8 +168,8 @@ public class Itms {
                         () -> new MagicalFeathersTrinket(Rarity.LEGENDARY, new Item.Properties()));
         public static final RegistrySupplier<MadAuraTrinket> MAD_AURA = reg("mad_aura",
                         () -> new MadAuraTrinket(Rarity.LEGENDARY, new Item.Properties()));
-        public static final RegistrySupplier<Trinket> BROKEN_TOTEM = reg("broken_totem",
-                        () -> new Trinket(Rarity.LEGENDARY, new Item.Properties()));
+        public static final RegistrySupplier<BrokenTotemTrinket> BROKEN_TOTEM = reg("broken_totem",
+                        () -> new BrokenTotemTrinket(Rarity.LEGENDARY, new Item.Properties()));
 
         public static final RegistrySupplier<Item> TREASURE_BAG = regItem("treasure_bag",
                         () -> new TreasureBagItem(new Item.Properties()));

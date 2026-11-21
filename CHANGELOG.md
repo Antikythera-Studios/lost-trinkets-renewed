@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## 21.1.5 - 2026-11-20
+## 21.1.5 - 2026-11-21
+
+### Added
+  - Trinket hooks for add-ons (attacking, getting hurt, death, kills, drops, looting, effects, eating and mining)
 
 ### Fixed
   - Players on the same server blocking each other's trinket unlocks, which could leave the host never getting any
+  - Golden Horseshoe and Golden Tooth not adding looting
+  - Ember not setting archers and other ranged attackers on fire
+  - `/losttrinkets clear` leaving trinket bonuses, like extra hearts, on the player
+  - Golden Melon and Lunch Bag not working on the last food item of a stack
+  - Creepo not stopping creepers from swelling on Fabric
 
 ---
 

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import guivnf.losttrinkets.LostTrinkets;
+import guivnf.losttrinkets.client.handler.ClientEventHandler;
 import guivnf.losttrinkets.client.render.entity.EntityRenderer;
 import guivnf.losttrinkets.client.screen.Screens;
 
@@ -21,5 +22,6 @@ public class LostTrinketsFabricClientMod implements ClientModInitializer {
         EntityRenderer.register();
         Screens.register();
         FabricClientEventHandler.register();
+        ClientEventHandler.register();
     }
 }

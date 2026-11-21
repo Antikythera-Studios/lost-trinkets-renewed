@@ -14,7 +14,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -25,6 +24,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.command.MainCommand;
+import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.entity.DarkVexEntity;
 import guivnf.losttrinkets.entity.Entities;
 import guivnf.losttrinkets.handler.DataManager;
@@ -78,8 +78,10 @@ public class NeoForgeEventHandler {
 
     @SubscribeEvent
     public static void onLivingHurt(LivingDamageEvent.Pre event) {
-        float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
-        event.getContainer().setNewDamage(amount);
+        EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
+        if (event.getSource().getEntity() instanceof Player attacker) {
+            event.setNewDamage(EventHandler.modifyAttackDamage(attacker, event.getEntity(), event.getSource(), event.getNewDamage()));
+        }
     }
 
     @SubscribeEvent
@@ -111,11 +113,6 @@ public class NeoForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onCriticalHit(CriticalHitEvent event) {
-        EventHandler.onCriticalHit(event.getEntity(), event.getTarget());
-    }
-
-    @SubscribeEvent
     public static void onRightClickAir(PlayerInteractEvent.RightClickEmpty event) {
         Player player = event.getEntity();
         if (player.level().isClientSide()
@@ -127,7 +124,7 @@ public class NeoForgeEventHandler {
 
     @SubscribeEvent
     public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getOriginalSpeed());
+        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getState(), event.getOriginalSpeed());
         if (newSpeed != event.getOriginalSpeed()) {
             event.setNewSpeed(newSpeed);
         }
@@ -181,6 +178,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         ServerHelper.setServer(event.getServer());
+        Configs.GENERAL.refresh();
     }
 
     @SubscribeEvent

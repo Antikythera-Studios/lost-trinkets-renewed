@@ -22,7 +22,7 @@ public class ClientLivingEntityRendererMixin {
     private void losttrinkets$onRenderHead(LivingEntity entity, float entityYaw, float partialTick,
             PoseStack poseStack, MultiBufferSource buffer, int packedLight,
             CallbackInfo ci) {
-        if (Platform.isForge())
+        if (Platform.isNeoForge())
             return;
         if (!(entity instanceof Player player))
             return;
