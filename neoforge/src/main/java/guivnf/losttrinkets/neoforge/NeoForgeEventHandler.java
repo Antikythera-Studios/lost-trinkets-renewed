@@ -14,7 +14,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -25,6 +24,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.command.MainCommand;
+import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.entity.DarkVexEntity;
 import guivnf.losttrinkets.entity.Entities;
 import guivnf.losttrinkets.handler.DataManager;
@@ -75,19 +75,14 @@ public class NeoForgeEventHandler {
             event.setCanceled(true);
             return;
         }
-        // Attacker's outgoing-damage trinkets (Silver Nail, Glory Shards), scale before reductions.
         if (event.getSource().getEntity() instanceof Player attacker) {
-            float mult = EventHandler.getOutgoingDamageMultiplier(attacker);
-            if (mult != 1.0F) {
-                event.setAmount(event.getAmount() * mult);
-            }
+            event.setAmount(EventHandler.modifyAttackDamage(attacker, event.getEntity(), event.getSource(), event.getAmount()));
         }
     }
 
     @SubscribeEvent
     public static void onLivingHurt(LivingDamageEvent.Pre event) {
-        float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
-        event.setNewDamage(amount);
+        EventHandler.onHurt(event.getEntity(), event.getSource(), event.getNewDamage());
     }
 
     @SubscribeEvent
@@ -102,24 +97,6 @@ public class NeoForgeEventHandler {
         LivingEntity target = event.getEntity();
         Entity killer = event.getSource().getEntity();
         if (killer instanceof Player player) {
-            // Approximate the Golden Tooth / Golden Horseshoe looting bonus (the vanilla getMobLooting
-            // hook was removed): add 0..level extra of each existing drop, like vanilla looting counts.
-            int looting = EventHandler.getLootingLevel(player);
-            if (looting > 0) {
-                net.minecraft.util.RandomSource rand = target.getRandom();
-                java.util.List<net.minecraft.world.entity.item.ItemEntity> bonus = new java.util.ArrayList<>();
-                for (net.minecraft.world.entity.item.ItemEntity drop : event.getDrops()) {
-                    int extra = rand.nextInt(looting + 1);
-                    if (extra > 0) {
-                        ItemStack copy = drop.getItem().copy();
-                        copy.setCount(extra);
-                        bonus.add(new net.minecraft.world.entity.item.ItemEntity(
-                                target.level(), target.getX(), target.getY(), target.getZ(), copy));
-                    }
-                }
-                event.getDrops().addAll(bonus);
-            }
-
             List<ItemStack> extras = EventHandler.getExtraDrops(player, target);
             extras.forEach(stack -> event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(
                     target.level(), target.getX(), target.getY(), target.getZ(), stack)));
@@ -137,11 +114,6 @@ public class NeoForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onCriticalHit(CriticalHitEvent event) {
-        EventHandler.onCriticalHit(event.getEntity(), event.getTarget());
-    }
-
-    @SubscribeEvent
     public static void onRightClickAir(PlayerInteractEvent.RightClickEmpty event) {
         Player player = event.getEntity();
         if (player.level().isClientSide()
@@ -153,7 +125,7 @@ public class NeoForgeEventHandler {
 
     @SubscribeEvent
     public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getOriginalSpeed());
+        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getState(), event.getOriginalSpeed());
         if (newSpeed != event.getOriginalSpeed()) {
             event.setNewSpeed(newSpeed);
         }
@@ -207,6 +179,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         ServerHelper.setServer(event.getServer());
+        Configs.GENERAL.refresh();
     }
 
     @SubscribeEvent

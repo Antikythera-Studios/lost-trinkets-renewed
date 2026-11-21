@@ -14,11 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.trinket.Rarity;
 import guivnf.losttrinkets.api.trinket.Trinket;
-import guivnf.losttrinkets.api.trinket.Trinkets;
-import guivnf.losttrinkets.item.Itms;
 
 import java.util.Set;
 
@@ -32,10 +29,11 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
         super(rarity, properties);
     }
 
-    public static void onBreak(Player player, BlockPos pos, BlockState state) {
+    @Override
+    public void onBlockBreak(Player owner, BlockPos pos, BlockState state) {
         if (octoMiningPlayer.get() != null)
             return;
-        if (!(player instanceof ServerPlayer serverPlayer))
+        if (!(owner instanceof ServerPlayer serverPlayer))
             return;
         try {
             octoMiningPlayer.set(serverPlayer);
@@ -47,9 +45,6 @@ public class OctopickTrinket extends Trinket<OctopickTrinket> {
 
     private static void mine(ServerPlayer player, BlockPos pos, BlockState state) {
         if (!player.hasCorrectToolForDrops(state))
-            return;
-        Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-        if (!trinkets.isActive(Itms.OCTOPICK.get()))
             return;
 
         var level = (net.minecraft.server.level.ServerLevel) player.level();

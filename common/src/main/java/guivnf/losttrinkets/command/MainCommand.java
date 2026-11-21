@@ -70,7 +70,7 @@ public class MainCommand {
                         .requires(GAMEMASTER)
                         .then(Commands.argument("targets", EntityArgument.players()).executes(context -> {
                             Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
-                            players.forEach(player -> LostTrinketsAPI.getTrinkets(player).clear());
+                            players.forEach(player -> LostTrinketsAPI.getTrinkets(player).clear(player));
                             return players.size();
                         }))));
     }

@@ -1,6 +1,5 @@
 package guivnf.losttrinkets.client.screen;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
 import guivnf.losttrinkets.client.handler.KeyHandler;
 

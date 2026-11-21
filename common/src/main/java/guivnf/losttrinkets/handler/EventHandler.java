@@ -1,24 +1,34 @@
 package guivnf.losttrinkets.handler;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.player.PlayerData;
+import guivnf.losttrinkets.api.trinket.ITrinket;
 import guivnf.losttrinkets.api.trinket.Trinkets;
 import guivnf.losttrinkets.item.Itms;
-import guivnf.losttrinkets.item.trinkets.*;
+import guivnf.losttrinkets.item.trinkets.BigFootTrinket;
+import guivnf.losttrinkets.item.trinkets.CreepoTrinket;
+import guivnf.losttrinkets.item.trinkets.OctopickTrinket;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +47,6 @@ public class EventHandler {
             data.unlockDelay--;
         }
         Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-        IceShardTrinket.frostWalk(player, player.blockPosition());
         trinkets.getTickable().forEach(trinket -> trinket.tick(player.level(), player.blockPosition(), player));
         if (trinkets.isActive(Itms.BOOK_O_ENCHANTING.get())
                 && player.containerMenu instanceof EnchantmentMenu em) {
@@ -111,23 +120,20 @@ public class EventHandler {
     }
 
     public static void onLivingUpdate(LivingEntity entity) {
-        FireMindTrinket.onLivingUpdate(entity);
+        if (entity instanceof Mob mob) {
+            LivingEntity target = mob.getTarget();
+            if (target == null) {
+                target = TargetHandler.getBrainMemorySafe(mob.getBrain(), MemoryModuleType.ATTACK_TARGET).orElse(null);
+            }
+            if (target instanceof Player owner) {
+                activeTrinkets(owner).forEach(trinket -> trinket.onTargeted(owner, mob));
+            }
+        }
         TargetHandler.onLivingUpdate(entity);
     }
 
     public static boolean onExplosionStart(Entity exploder) {
-        if (exploder instanceof Creeper) {
-            Creeper creeper = (Creeper) exploder;
-            LivingEntity target = creeper.getTarget();
-            if (target instanceof Player) {
-                Player player = (Player) target;
-                Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-                if (trinkets.isActive(Itms.CREEPO.get())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return CreepoTrinket.preventExplosion(exploder);
     }
 
     public static boolean joinWorld(Entity entity) {
@@ -137,117 +143,86 @@ public class EventHandler {
         return false;
     }
 
-    public static boolean onAttack(LivingEntity entityLiving, net.minecraft.world.damagesource.DamageSource source) {
-        if (source == null)
-            return false;
-        if (BlazeHeartTrinket.isImmuneToFire(entityLiving, source)) {
-            return true;
+    public static boolean onAttack(LivingEntity entity, DamageSource source) {
+        if (source != null && entity instanceof Player owner) {
+            for (ITrinket trinket : activeTrinkets(owner)) {
+                if (trinket.onAttacked(owner, source))
+                    return true;
+            }
         }
-        if (MadAuraTrinket.shouldCancelAttack(entityLiving, source))
-            return true;
-        OctopusLegTrinket.onAttack(entityLiving, source);
         return false;
     }
 
-    public static float onHurt(LivingEntity entityLiving, net.minecraft.world.damagesource.DamageSource source,
-            float amount) {
+    public static void onHurt(LivingEntity entity, DamageSource source, float amount) {
         if (source == null)
-            return amount;
-        if (entityLiving instanceof Player player) {
-            RubyHeartTrinket.saveHealth(player);
+            return;
+        if (source.getEntity() instanceof Player attacker) {
+            activeTrinkets(attacker).forEach(trinket -> trinket.onAttack(attacker, entity, source, amount));
         }
-        amount = DarkDaggerTrinket.onHurt(entityLiving, source, amount);
-        amount = DarkEggTrinket.onHurt(entityLiving, source, amount);
-        amount = DropSpindleTrinket.onHurt(entityLiving, source, amount);
-        amount = EmberTrinket.onHurt(entityLiving, source, amount);
-        amount = GoldenSwatterTrinket.onHurt(entityLiving, source, amount);
-        amount = MadPiggyTrinket.onHurt(entityLiving, source, amount);
-        amount = MirrorTrinket.onHurt(entityLiving, source, amount);
-        amount = SerpentToothTrinket.onHurt(entityLiving, source, amount);
-        amount = StarfishTrinket.onHurt(entityLiving, source, amount);
-        amount = SlingshotTrinket.onHurt(entityLiving, source, amount);
-        amount = WitherHandTrinket.onHurt(entityLiving, source, amount);
-
-        return amount;
+        if (entity instanceof Player owner) {
+            activeTrinkets(owner).forEach(trinket -> trinket.onHurt(owner, source, amount));
+        }
     }
 
-    // Outgoing melee damage multiplier from the attacker's trinkets (Silver Nail, Glory Shards).
-    // Applied per-loader at the outgoing-damage hook (NeoForge LivingIncomingDamageEvent / Fabric mixin).
-    public static float getOutgoingDamageMultiplier(Player attacker) {
-        Trinkets trinkets = LostTrinketsAPI.getTrinkets(attacker);
-        float mult = 1.0F;
-        if (trinkets.isActive(Itms.SILVER_NAIL.get())) {
-            mult *= 1.1F;
+    public static float modifyAttackDamage(Player attacker, Entity target, DamageSource source, float amount) {
+        float damage = amount;
+        for (ITrinket trinket : activeTrinkets(attacker)) {
+            damage = trinket.modifyAttackDamage(attacker, target, source, damage);
         }
-        if (trinkets.isActive(Itms.GLORY_SHARDS.get())) {
-            mult *= 1.2F;
-        }
-        return mult;
+        return damage;
     }
 
-    // Effective looting level from the killer's trinkets (Golden Tooth, Golden Horseshoe).
-    public static int getLootingLevel(Player killer) {
-        Trinkets trinkets = LostTrinketsAPI.getTrinkets(killer);
-        int level = 0;
-        if (trinkets.isActive(Itms.GOLDEN_TOOTH.get())) {
-            level++;
-        }
-        if (trinkets.isActive(Itms.GOLDEN_HORSESHOE.get())) {
-            level++;
-        }
-        return level;
-    }
-
-    public static boolean onDeath(LivingEntity entityLiving, net.minecraft.world.damagesource.DamageSource source) {
+    public static boolean onDeath(LivingEntity entity, DamageSource source) {
         if (source == null)
             return false;
-        boolean cancelled = RubyHeartTrinket.onDeath(entityLiving, source);
-        if (!cancelled) {
-            Entity killer = source.getEntity();
-            if (killer instanceof Player player) {
-                boolean isBoss = entityLiving instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon
-                        || entityLiving instanceof net.minecraft.world.entity.boss.wither.WitherBoss;
-                UnlockHandler.kill(player, isBoss);
+        if (entity instanceof Player owner) {
+            for (ITrinket trinket : activeTrinkets(owner)) {
+                if (trinket.preventDeath(owner, source))
+                    return true;
             }
         }
-        return cancelled;
+        if (source.getEntity() instanceof Player killer) {
+            activeTrinkets(killer).forEach(trinket -> trinket.onKill(killer, entity, source));
+            UnlockHandler.kill(killer, entity instanceof EnderDragon || entity instanceof WitherBoss);
+        }
+        return false;
     }
 
     public static List<ItemStack> getExtraDrops(Player player, LivingEntity target) {
-        List<ItemStack> extras = new ArrayList<>();
-        ItemStack butchersExtra = ButchersCleaverTrinket.getExtraDrop(player, target);
-        if (!butchersExtra.isEmpty())
-            extras.add(butchersExtra);
-        ItemStack skullExtra = GoldenSkullTrinket.getExtraDrop(player, target);
-        if (!skullExtra.isEmpty())
-            extras.add(skullExtra);
-        extras.addAll(TreasureRingTrinket.getExtraDrops(player, target));
-        return extras;
+        List<ItemStack> drops = new ArrayList<>();
+        activeTrinkets(player).forEach(trinket -> trinket.addKillDrops(player, target, drops));
+        return drops;
     }
 
     public static boolean shouldDenyMobEffect(Player player, Holder<MobEffect> effect) {
-        return CoffeeBeanTrinket.shouldDenyEffect(player, effect)
-                || MagicalHerbsTrinket.shouldDenyEffect(player, effect)
-                || OxalisTrinket.shouldDenyEffect(player, effect)
-                || TeaLeafTrinket.shouldDenyEffect(player, effect);
+        return activeTrinkets(player).stream().anyMatch(trinket -> trinket.preventEffect(player, effect));
     }
 
-    public static void onCriticalHit(Player player, Entity target) {
-        CreepoTrinket.onCriticalHit(player, target);
+    public static int getLootingBonus(Player player) {
+        return activeTrinkets(player).stream().mapToInt(trinket -> trinket.getLootingBonus(player)).sum();
     }
 
-    public static void onItemEaten(Player player, ItemStack stack, Level level) {
-        GoldenMelonTrinket.onItemEaten(player, stack, level);
-        LunchBagTrinket.onItemEaten(player, stack, level);
+    public static void onItemEaten(Player player, ItemStack stack) {
+        activeTrinkets(player).forEach(trinket -> trinket.onItemEaten(player, stack));
     }
 
-    public static float onBreakSpeed(Player player, float original) {
-        return MinersPickTrinket.onBreakSpeed(player, original);
+    public static float onBreakSpeed(Player player, BlockState state, float speed) {
+        float result = speed;
+        for (ITrinket trinket : activeTrinkets(player)) {
+            result = trinket.modifyBreakSpeed(player, state, result);
+        }
+        return result;
     }
 
-    public static void onBreak(Player player, net.minecraft.core.BlockPos pos,
-            net.minecraft.world.level.block.state.BlockState state) {
-        OctopickTrinket.onBreak(player, pos, state);
+    public static void onBreak(Player player, BlockPos pos, BlockState state) {
+        activeTrinkets(player).forEach(trinket -> trinket.onBlockBreak(player, pos, state));
         UnlockHandler.checkBlockHarvest(player, player.level(), pos, state);
+    }
+
+    /// The player's active trinkets, in registration order.
+    private static List<ITrinket> activeTrinkets(Player player) {
+        List<ITrinket> trinkets = new ArrayList<>(LostTrinketsAPI.getTrinkets(player).getActiveTrinkets());
+        trinkets.sort(Comparator.comparingInt(trinket -> BuiltInRegistries.ITEM.getId(trinket.getItem())));
+        return trinkets;
     }
 }

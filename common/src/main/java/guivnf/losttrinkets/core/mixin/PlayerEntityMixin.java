@@ -1,20 +1,20 @@
 package guivnf.losttrinkets.core.mixin;
 
+import dev.architectury.platform.Platform;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.api.trinket.Trinkets;
 import guivnf.losttrinkets.handler.EventHandler;
 import guivnf.losttrinkets.item.Itms;
 import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -24,6 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin {
     private static final Identifier HORSESHOE_STEP_ID = Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "horseshoe_step_height");
+
+    @Unique
+    private Entity losttrinkets$attackTarget;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void losttrinkets$updateStepHeight(CallbackInfo ci) {
@@ -49,23 +52,27 @@ public abstract class PlayerEntityMixin {
         }
     }
 
-    // MC 26.1 removed Player#eat; the "item eaten" hook now lives in ConsumableMixin (Consumable#onConsume).
-
-    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"), index = 1)
-    private float losttrinkets$scaleDamage(float damage) {
-        if (dev.architectury.platform.Platform.isNeoForge())
-            return damage;
-        Player self = (Player) (Object) this;
-        return damage * guivnf.losttrinkets.handler.EventHandler.getOutgoingDamageMultiplier(self);
+    @Inject(method = "attack", at = @At("HEAD"))
+    private void losttrinkets$captureAttackTarget(Entity target, CallbackInfo ci) {
+        this.losttrinkets$attackTarget = target;
     }
 
+    // Fabric only, NeoForge uses LivingIncomingDamageEvent
+    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"), index = 1)
+    private float losttrinkets$modifyAttackDamage(DamageSource source, float damage) {
+        if (Platform.isNeoForge())
+            return damage;
+        return EventHandler.modifyAttackDamage((Player) (Object) this, this.losttrinkets$attackTarget, source, damage);
+    }
+
+    // Fabric only, NeoForge uses PlayerEvent.BreakSpeed
     @Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
-    private void losttrinkets$minersPickBreakSpeed(BlockState state, CallbackInfoReturnable<Float> cir) {
-        if (!dev.architectury.platform.Platform.isFabric())
+    private void losttrinkets$modifyBreakSpeed(BlockState state, CallbackInfoReturnable<Float> cir) {
+        if (!Platform.isFabric())
             return;
-        float newSpeed = EventHandler.onBreakSpeed((Player) (Object) this, cir.getReturnValueF());
-        if (newSpeed != cir.getReturnValueF()) {
-            cir.setReturnValue(newSpeed);
+        float speed = EventHandler.onBreakSpeed((Player) (Object) this, state, cir.getReturnValueF());
+        if (speed != cir.getReturnValueF()) {
+            cir.setReturnValue(speed);
         }
     }
 }

@@ -85,5 +85,4 @@ public class DarkVexModel extends EntityModel<DarkVexRenderState> {
         this.right_wing.yRot = 0.47123894F + Mth.cos(state.ageInTicks * 0.8F) * (float) Math.PI * 0.05F;
         this.left_wing.yRot = -this.right_wing.yRot;
     }
-    // MC 26.1: Model#renderToBuffer is final and renders the root part passed to super(root).
 }

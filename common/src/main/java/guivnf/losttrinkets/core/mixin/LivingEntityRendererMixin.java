@@ -16,8 +16,7 @@ import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.client.LTHideable;
 import guivnf.losttrinkets.item.Itms;
 
-// Tha Ghost: fully hide an invisible wearer (armor/held items too). MC 26.1 renders from a render
-// state, so mark the state during extraction, then cancel the submit step for marked states.
+/// Tha Ghost: hides an invisible wearer completely, armor and held items too.
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin {
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))

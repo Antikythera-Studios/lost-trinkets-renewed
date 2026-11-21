@@ -23,11 +23,9 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import guivnf.losttrinkets.LostTrinkets;
-import guivnf.losttrinkets.client.handler.ClientEventHandler;
 import guivnf.losttrinkets.client.handler.KeyHandler;
 import guivnf.losttrinkets.client.handler.hud.HudHandler;
 import guivnf.losttrinkets.client.model.DarkVexModel;
@@ -40,16 +38,6 @@ public class NeoForgeClientEventHandler {
     public static void onClientTick(ClientTickEvent.Post event) {
         HudHandler.tick();
         KeyHandler.handleKeyInput();
-    }
-
-    @SubscribeEvent
-    @SuppressWarnings("unchecked")
-    public static void onRenderLivingPre(RenderLivingEvent.Pre<?, ?, ?> event) {
-        boolean cancel = ClientEventHandler.onRenderLivingPre(
-                event.getRenderState(), event.getRenderer(), event.getPoseStack(), event.getPartialTick());
-        if (cancel) {
-            event.setCanceled(true);
-        }
     }
 
     @SubscribeEvent
@@ -71,8 +59,6 @@ public class NeoForgeClientEventHandler {
 
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            // MC 26.1: AddPackFindersEvent#addPackFinders locates the pack from the mod's resources
-            // by Identifier, replacing the old ModFile#findResource + PathPackResources plumbing.
             event.addPackFinders(
                     net.minecraft.resources.Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, "resourcepacks/legacy"),
                     PackType.CLIENT_RESOURCES,

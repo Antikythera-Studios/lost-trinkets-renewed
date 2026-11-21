@@ -55,8 +55,6 @@ public abstract class PigEntityMixin extends Animal {
 
     @Inject(method = "getRiddenSpeed", at = @At("RETURN"), cancellable = true)
     private void losttrinkets$modifySaddledSpeed(Player player, CallbackInfoReturnable<Float> cir) {
-        // MC 26.1's getRiddenSpeed returns a much smaller value than the old getSaddledSpeed
-        // (movementSpeed * 0.225 * boost), so scale the current speed instead of hard-setting it.
         if (LostTrinketsAPI.getTrinkets(player).isActive(Itms.PIGGY.get())) {
             cir.setReturnValue(cir.getReturnValueF() * 2.0F);
         }

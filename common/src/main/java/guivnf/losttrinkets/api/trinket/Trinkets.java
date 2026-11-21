@@ -116,14 +116,14 @@ public class Trinkets {
         this.data.setSync(true);
     }
 
-    public boolean clear() {
-        if (!this.available.isEmpty() || !this.active.isEmpty()) {
-            this.available.clear();
-            this.active.clear();
-            this.data.setSync(true);
-            return true;
+    public boolean clear(Player player) {
+        if (this.available.isEmpty() && this.active.isEmpty()) {
+            return false;
         }
-        return false;
+        new ArrayList<>(this.active).forEach(trinket -> setInactive(trinket, player));
+        this.available.clear();
+        this.data.setSync(true);
+        return true;
     }
 
     public boolean give(ITrinket trinket) {

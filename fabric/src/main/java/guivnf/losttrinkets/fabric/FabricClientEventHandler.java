@@ -1,6 +1,5 @@
 package guivnf.losttrinkets.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -14,7 +13,7 @@ import guivnf.losttrinkets.client.handler.KeyHandler;
 import guivnf.losttrinkets.client.handler.hud.HudHandler;
 import guivnf.losttrinkets.client.model.DarkVexModel;
 import guivnf.losttrinkets.client.render.entity.DarkVexModelLayer;
-import guivnf.losttrinkets.handler.UnlockManager;
+import guivnf.losttrinkets.config.Configs;
 
 @Environment(EnvType.CLIENT)
 public class FabricClientEventHandler {
@@ -40,7 +39,8 @@ public class FabricClientEventHandler {
             }
         });
 
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> UnlockManager.init());
+        // rescan once every mod has registered its items
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> Configs.GENERAL.refresh());
 
         InteractionEvent.CLIENT_RIGHT_CLICK_AIR.register((player, hand) -> {
             if (hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {

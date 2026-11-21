@@ -4,36 +4,24 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import guivnf.losttrinkets.api.LostTrinketsAPI;
 import guivnf.losttrinkets.api.trinket.Rarity;
 import guivnf.losttrinkets.api.trinket.Trinket;
-import guivnf.losttrinkets.api.trinket.Trinkets;
-import guivnf.losttrinkets.item.Itms;
 
 public class OctopusLegTrinket extends Trinket<OctopusLegTrinket> {
     public OctopusLegTrinket(Rarity rarity, Properties properties) {
         super(rarity, properties);
     }
 
-    public static void onAttack(LivingEntity entityLiving, DamageSource source) {
-        if (!(entityLiving.level() instanceof ServerLevel serverLevel))
-            return;
-        if (source == null)
-            return;
-        Entity immediateSource = source.getDirectEntity();
-        if (entityLiving instanceof Player player) {
-            Trinkets trinkets = LostTrinketsAPI.getTrinkets(player);
-            if (immediateSource instanceof LivingEntity living) {
-                if (trinkets.isActive(Itms.OCTOPUS_LEG.get())) {
-                    var server = serverLevel.getServer();
-                    server.schedule(new TickTask(server.getTickCount() + 1, () -> disarm(serverLevel, living)));
-                }
-            }
+    @Override
+    public boolean onAttacked(Player owner, DamageSource source) {
+        if (owner.level() instanceof ServerLevel serverLevel && source.getDirectEntity() instanceof LivingEntity living) {
+            var server = serverLevel.getServer();
+            server.schedule(new TickTask(server.getTickCount() + 1, () -> disarm(serverLevel, living)));
         }
+        return false;
     }
 
     private static void disarm(ServerLevel level, LivingEntity living) {

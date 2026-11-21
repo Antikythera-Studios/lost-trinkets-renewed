@@ -7,7 +7,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+
 import net.minecraft.world.item.ItemStack;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
@@ -28,16 +28,6 @@ public class UnlockManager {
     private static final Set<ITrinket> TRINKETS = Sets.newLinkedHashSet();
     private static final Set<ITrinket> RANDOM_TRINKETS = Sets.newLinkedHashSet();
     private static final List<WeightedTrinket> WEIGHTED_TRINKETS = new ArrayList<>();
-
-    public static void init() {
-        ALL_TRINKETS.clear();
-        BuiltInRegistries.ITEM.stream()
-                .filter(item -> item instanceof ITrinket)
-                .map(item -> (ITrinket) item)
-                .forEach(ALL_TRINKETS::add);
-        TRINKETS.addAll(ALL_TRINKETS);
-        RANDOM_TRINKETS.addAll(ALL_TRINKETS);
-    }
 
     @Nullable
     public static ITrinket unlock(Player player, boolean checkDelay) {
@@ -107,7 +97,13 @@ public class UnlockManager {
     }
 
     public static void refresh() {
-        init();
+        ALL_TRINKETS.clear();
+        BuiltInRegistries.ITEM.stream()
+                .filter(item -> item instanceof ITrinket)
+                .map(item -> (ITrinket) item)
+                .forEach(ALL_TRINKETS::add);
+        TRINKETS.addAll(ALL_TRINKETS);
+        RANDOM_TRINKETS.addAll(ALL_TRINKETS);
 
         Set<Identifier> banned = Configs.GENERAL.blackList.stream()
                 .map(Identifier::parse)

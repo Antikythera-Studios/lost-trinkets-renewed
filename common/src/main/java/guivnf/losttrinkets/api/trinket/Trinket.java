@@ -18,7 +18,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.client.util.MC;
 
 import java.util.List;
 import java.util.Locale;
@@ -52,16 +51,6 @@ public class Trinket<T extends Trinket<T>> extends Item implements ITrinket {
             net.minecraft.world.item.component.TooltipDisplay display,
             java.util.function.Consumer<Component> tooltip, TooltipFlag flag) {
         java.util.List<Component> lines = new java.util.ArrayList<>();
-        if (LostTrinketsAPI.get().isDisabled(this)) {
-            lines.add(Component.translatable("gui.losttrinkets.status.disabled").withStyle(ChatFormatting.DARK_RED));
-        } else {
-            Player player = MC.player().orElse(null);
-            if (player != null && LostTrinketsAPI.getTrinkets(player).has(this)) {
-                lines.add(Component.translatable("gui.losttrinkets.status.owned").withStyle(ChatFormatting.BLUE));
-            } else if (LostTrinketsAPI.get().isNonRandom(this)) {
-                lines.add(Component.translatable("gui.losttrinkets.status.non_random").withStyle(ChatFormatting.DARK_GRAY));
-            }
-        }
         addTrinketDescription(stack, lines);
         lines.add(Component.translatable("gui.losttrinkets.rarity." + getRarity().name().toLowerCase(Locale.ENGLISH)).withStyle(ChatFormatting.DARK_GRAY));
         lines.forEach(tooltip);

@@ -131,20 +131,20 @@ public class Itms {
                         props -> new TreasureRingTrinket(Rarity.EPIC, props));
         public static final RegistrySupplier<OctopickTrinket> OCTOPICK = reg("octopick",
                         props -> new OctopickTrinket(Rarity.EPIC, props));
-        public static final RegistrySupplier<Trinket> SILVER_NAIL = reg("silver_nail",
-                        props -> new Trinket(Rarity.EPIC, props));
-        public static final RegistrySupplier<Trinket> GLORY_SHARDS = reg("glory_shards",
-                        props -> new Trinket(Rarity.EPIC, props));
+        public static final RegistrySupplier<SilverNailTrinket> SILVER_NAIL = reg("silver_nail",
+                        props -> new SilverNailTrinket(Rarity.EPIC, props));
+        public static final RegistrySupplier<GloryShardsTrinket> GLORY_SHARDS = reg("glory_shards",
+                        props -> new GloryShardsTrinket(Rarity.EPIC, props));
 
         public static final RegistrySupplier<Trinket> ASH_GLOVES = reg("ash_gloves",
                         props -> new Trinket(Rarity.LEGENDARY, props)
                                         .add(Attributes.ATTACK_SPEED, "1a71bd06-0d8b-459e-b961-fbd992d61c5d", 1024.0D));
         public static final RegistrySupplier<RubyHeartTrinket> RUBY_HEART = reg("ruby_heart",
                         props -> new RubyHeartTrinket(Rarity.LEGENDARY, props));
-        public static final RegistrySupplier<Trinket> GOLDEN_HORSESHOE = reg("golden_horseshoe",
-                        props -> new Trinket(Rarity.LEGENDARY, props));
-        public static final RegistrySupplier<Trinket> GOLDEN_TOOTH = reg("golden_tooth",
-                        props -> new Trinket(Rarity.LEGENDARY, props));
+        public static final RegistrySupplier<GoldenHorseshoeTrinket> GOLDEN_HORSESHOE = reg("golden_horseshoe",
+                        props -> new GoldenHorseshoeTrinket(Rarity.LEGENDARY, props));
+        public static final RegistrySupplier<GoldenToothTrinket> GOLDEN_TOOTH = reg("golden_tooth",
+                        props -> new GoldenToothTrinket(Rarity.LEGENDARY, props));
         public static final RegistrySupplier<Trinket> BROKEN_HEART_1 = reg("broken_heart_1",
                         props -> new Trinket(Rarity.LEGENDARY, props)
                                         .add(Attributes.MAX_HEALTH, "092962d0-2711-48e0-9a84-f768ea4aeeb2", 4.0D));
@@ -168,8 +168,8 @@ public class Itms {
                         props -> new MagicalFeathersTrinket(Rarity.LEGENDARY, props));
         public static final RegistrySupplier<MadAuraTrinket> MAD_AURA = reg("mad_aura",
                         props -> new MadAuraTrinket(Rarity.LEGENDARY, props));
-        public static final RegistrySupplier<Trinket> BROKEN_TOTEM = reg("broken_totem",
-                        props -> new Trinket(Rarity.LEGENDARY, props));
+        public static final RegistrySupplier<BrokenTotemTrinket> BROKEN_TOTEM = reg("broken_totem",
+                        props -> new BrokenTotemTrinket(Rarity.LEGENDARY, props));
 
         public static final RegistrySupplier<Item> TREASURE_BAG = regItem("treasure_bag",
                         props -> new TreasureBagItem(props));
@@ -188,7 +188,7 @@ public class Itms {
                 return s;
         }
 
-        // MC 26.1 requires an item's registry id to be set on its Properties before the Item is built.
+        /// Item properties with the registry id set.
         private static Item.Properties props(String name) {
                 return new Item.Properties().setId(net.minecraft.resources.ResourceKey.create(Registries.ITEM,
                                 net.minecraft.resources.Identifier.fromNamespaceAndPath(LostTrinkets.MOD_ID, name)));
