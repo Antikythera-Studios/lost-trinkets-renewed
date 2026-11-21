@@ -71,6 +71,8 @@ publishMods {
         projectId = curseforge_id
         projectSlug = curseforge_slug
         minecraftVersions.add(mc_version)
+        clientRequired = true
+        serverRequired = true
     }
 
     // Shared Modrinth options.
