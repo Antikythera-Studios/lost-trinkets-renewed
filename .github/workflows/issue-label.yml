@@ -1,0 +1,33 @@
+name: Label issues
+on:
+  issues:
+    types:
+      - opened
+jobs:
+  label_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Set label
+        id: setlabel
+        run: |
+          assoc="${{ github.event.issue.author_association }}"
+          echo "Author association: $assoc"
+
+          case "$assoc" in
+            OWNER|MEMBER|COLLABORATOR)
+              echo "label=core contributor" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "label=triage" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Apply label
+        run: gh issue edit "$NUMBER" --add-label "$LABEL"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          LABEL: ${{ steps.setlabel.outputs.label }}

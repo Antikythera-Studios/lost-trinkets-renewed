@@ -37,7 +37,6 @@ public class LostTrinketsNeoForgeMod {
         event.enqueueWork(() -> {
             guivnf.losttrinkets.client.network.ClientPacketHandlers.registerAll();
             guivnf.losttrinkets.client.render.entity.EntityRenderer.register();
-            guivnf.losttrinkets.client.render.tile.TileRenderer.register();
             guivnf.losttrinkets.client.screen.Screens.register();
         });
     }

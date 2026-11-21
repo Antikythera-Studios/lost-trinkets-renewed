@@ -1,0 +1,38 @@
+name: 🖥️ API Enhancement
+description: Propose an enhancement to the Lost Trinkets public API, for add-ons and other mods.
+title: "[API]: "
+labels: [ "public api" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this request!
+
+        This template is for add-on and mod developers who want to integrate with Lost Trinkets, improve compatibility, or extend the public API (`guivnf.losttrinkets.api`).
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: |
+        Describe the problem that led to this request.
+        Include any alternatives you've considered and why they don't work.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: |
+        Describe your proposed solution and what you'd like Lost Trinkets to provide.
+
+        You can include code samples, images, or videos.
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Antikythera-Studios/lost-trinkets-renewed/blob/HEAD/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

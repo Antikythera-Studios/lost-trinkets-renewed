@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## 21.1.5 - 2026-11-20
+
+### Fixed
+  - Players on the same server blocking each other's trinket unlocks, which could leave the host never getting any
+
+---
+
 ## 21.1.4 - 2026-07-13
 
 ### Added
