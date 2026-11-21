@@ -2,6 +2,7 @@ package guivnf.losttrinkets.forge;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import guivnf.losttrinkets.client.handler.ClientEventHandler;
 import guivnf.losttrinkets.client.network.ClientPackets;
 import guivnf.losttrinkets.client.render.entity.EntityRenderer;
 import guivnf.losttrinkets.client.screen.Screens;
@@ -21,6 +22,7 @@ public class ForgeClientMod {
             ClientPackets.register();
             EntityRenderer.register();
             Screens.register();
+            ClientEventHandler.register();
         });
     }
 }

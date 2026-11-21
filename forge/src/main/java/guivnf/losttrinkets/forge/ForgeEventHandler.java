@@ -7,7 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -21,6 +20,7 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.TickEvent;
 import guivnf.losttrinkets.LostTrinkets;
 import guivnf.losttrinkets.command.MainCommand;
+import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.entity.DarkVexEntity;
 import guivnf.losttrinkets.entity.Entities;
 import guivnf.losttrinkets.handler.DataManager;
@@ -71,8 +71,11 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
-        float amount = EventHandler.onHurt(event.getEntity(), event.getSource(), event.getAmount());
-        event.setAmount(amount);
+        EventHandler.onHurt(event.getEntity(), event.getSource(), event.getAmount());
+        if (event.getSource().getEntity() instanceof Player attacker) {
+            event.setAmount(EventHandler.modifyAttackDamage(attacker, event.getEntity(), event.getSource(),
+                    event.getAmount()));
+        }
     }
 
     @SubscribeEvent
@@ -104,14 +107,10 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void onCriticalHit(CriticalHitEvent event) {
-        EventHandler.onCriticalHit(event.getEntity(), event.getTarget());
-    }
-
-    @SubscribeEvent
     public static void onLooting(LootingLevelEvent event) {
-        int bonus = EventHandler.onLooting(event.getDamageSource());
-        event.setLootingLevel(event.getLootingLevel() + bonus);
+        if (event.getDamageSource() != null && event.getDamageSource().getEntity() instanceof Player player) {
+            event.setLootingLevel(event.getLootingLevel() + EventHandler.getLootingBonus(player));
+        }
     }
 
     @SubscribeEvent
@@ -121,7 +120,7 @@ public class ForgeEventHandler {
 
     @SubscribeEvent
     public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getOriginalSpeed());
+        float newSpeed = EventHandler.onBreakSpeed(event.getEntity(), event.getState(), event.getOriginalSpeed());
         if (newSpeed != event.getOriginalSpeed()) {
             event.setNewSpeed(newSpeed);
         }
@@ -177,6 +176,7 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         ServerHelper.setServer(event.getServer());
+        Configs.GENERAL.refresh();
     }
 
     @SubscribeEvent

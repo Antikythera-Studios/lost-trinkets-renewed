@@ -1,15 +1,18 @@
 package guivnf.losttrinkets.core.mixin;
 
+import dev.architectury.platform.Platform;
 import guivnf.losttrinkets.api.LostTrinketsAPI;
-import guivnf.losttrinkets.api.trinket.Trinkets;
 import guivnf.losttrinkets.handler.EventHandler;
 import guivnf.losttrinkets.item.Itms;
 import guivnf.losttrinkets.item.trinkets.ThaCloudTrinket;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -18,6 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin {
+    /// The entity being hit by the current `attack` call.
+    @Unique
+    private Entity losttrinkets$attackTarget;
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void losttrinkets$updateStepHeight(CallbackInfo ci) {
         Player self = (Player) (Object) this;
@@ -33,39 +40,35 @@ public abstract class PlayerEntityMixin {
         }
     }
 
-    // runs on both loaders via mixin Forge's onUseFinish was removed to avoid
-    // double-triggering
-    @Inject(method = "eat", at = @At("TAIL"))
+    // HEAD, the stack is already shrunk by TAIL
+    @Inject(method = "eat", at = @At("HEAD"))
     private void losttrinkets$onItemEaten(Level level, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
         if (!level.isClientSide) {
-            EventHandler.onItemEaten((Player) (Object) this, stack, level);
+            EventHandler.onItemEaten((Player) (Object) this, stack);
         }
     }
 
-    // fabric only , on Forge, EventHandler.onHurt() return value is used by
-    // LivingHurtEvent.setAmount()
-    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"), index = 1)
-    private float losttrinkets$scaleDamage(float damage) {
-        if (dev.architectury.platform.Platform.isForge())
-            return damage;
-        Player self = (Player) (Object) this;
-        Trinkets trinkets = LostTrinketsAPI.getTrinkets(self);
-        if (trinkets.isActive(Itms.SILVER_NAIL.get()))
-            damage *= 1.1F;
-        if (trinkets.isActive(Itms.GLORY_SHARDS.get()))
-            damage *= 1.2F;
-        return damage;
+    @Inject(method = "attack", at = @At("HEAD"))
+    private void losttrinkets$captureAttackTarget(Entity target, CallbackInfo ci) {
+        this.losttrinkets$attackTarget = target;
     }
 
-    // fabric only, on Forge, PlayerEvent.BreakSpeed in ForgeEventHandler handles
-    // this
+    // Fabric only, Forge uses LivingHurtEvent
+    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"), index = 1)
+    private float losttrinkets$modifyAttackDamage(DamageSource source, float damage) {
+        if (Platform.isForge())
+            return damage;
+        return EventHandler.modifyAttackDamage((Player) (Object) this, this.losttrinkets$attackTarget, source, damage);
+    }
+
+    // Fabric only, Forge uses PlayerEvent.BreakSpeed
     @Inject(method = "getDestroySpeed", at = @At("RETURN"), cancellable = true)
-    private void losttrinkets$minersPickBreakSpeed(BlockState state, CallbackInfoReturnable<Float> cir) {
-        if (!dev.architectury.platform.Platform.isFabric())
+    private void losttrinkets$modifyBreakSpeed(BlockState state, CallbackInfoReturnable<Float> cir) {
+        if (!Platform.isFabric())
             return;
-        float newSpeed = EventHandler.onBreakSpeed((Player) (Object) this, cir.getReturnValueF());
-        if (newSpeed != cir.getReturnValueF()) {
-            cir.setReturnValue(newSpeed);
+        float speed = EventHandler.onBreakSpeed((Player) (Object) this, state, cir.getReturnValueF());
+        if (speed != cir.getReturnValueF()) {
+            cir.setReturnValue(speed);
         }
     }
 }

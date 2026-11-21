@@ -1,6 +1,5 @@
 package guivnf.losttrinkets.fabric;
 
-import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.fabricmc.api.EnvType;
@@ -12,7 +11,7 @@ import guivnf.losttrinkets.client.handler.KeyHandler;
 import guivnf.losttrinkets.client.handler.hud.HudHandler;
 import guivnf.losttrinkets.client.model.DarkVexModel;
 import guivnf.losttrinkets.client.render.entity.DarkVexModelLayer;
-import guivnf.losttrinkets.handler.UnlockManager;
+import guivnf.losttrinkets.config.Configs;
 
 @Environment(EnvType.CLIENT)
 public class FabricClientEventHandler {
@@ -38,8 +37,8 @@ public class FabricClientEventHandler {
             }
         });
 
-        // populate trinket registry on client start, fixes "Disabled" tooltip on Fabric
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> UnlockManager.init());
+        // rescan once every mod has registered its items
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> Configs.GENERAL.refresh());
 
         KeyBindingHelper.registerKeyBinding(KeyHandler.TRINKET_GUI);
         KeyBindingHelper.registerKeyBinding(KeyHandler.MAGNETO);

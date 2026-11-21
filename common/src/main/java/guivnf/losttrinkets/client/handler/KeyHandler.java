@@ -29,10 +29,7 @@ public class KeyHandler {
                 && tc.getKey().equals("key.keyboard.unknown");
     }
 
-    /**
-     * returns the tooltip hint for the maagneto trinket based on current key
-     * binding
-     */
+    /// Magneto tooltip hint for the current key binding.
     public static Component getMagnetoHint() {
         if (isMagnetoUnbound()) {
             return Component.translatable("info.losttrinkets.magneto.unbound").withStyle(ChatFormatting.GRAY);
@@ -40,7 +37,6 @@ public class KeyHandler {
         return Component.translatable("info.losttrinkets.magneto.bound", MAGNETO.getTranslatedKeyMessage()).withStyle(ChatFormatting.GRAY);
     }
 
-    /** called each client tick to handle key presses.. */
     public static void handleKeyInput() {
         if (TRINKET_GUI.consumeClick()) {
             Minecraft.getInstance().setScreen(new TrinketsScreen());
