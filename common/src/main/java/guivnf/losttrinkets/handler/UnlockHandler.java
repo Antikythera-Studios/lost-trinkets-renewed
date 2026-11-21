@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import guivnf.losttrinkets.api.trinket.ITrinket;
 import guivnf.losttrinkets.config.Configs;
 import guivnf.losttrinkets.impl.LostTrinketsAPIImpl;
-import guivnf.losttrinkets.util.Ticker;
 
 import java.util.*;
 
@@ -28,8 +27,8 @@ public class UnlockHandler {
             Identifier.fromNamespaceAndPath("c", "logs"));
 
     private static final Map<UUID, Type> MAP = new HashMap<>();
-    private static final Ticker DELAY = new Ticker(10);
-    private static boolean flag;
+    private static final Map<UUID, Long> NEXT_ROLL = new HashMap<>();
+    private static final int ROLL_DELAY = 10; // ticks
 
     public static void tick(Player player) {
         List<ITrinket> trinkets = LostTrinketsAPIImpl.UNLOCK_QUEUE.get(player.getUUID());
@@ -52,18 +51,12 @@ public class UnlockHandler {
     private static void checkUnlocks(Player player) {
         if (Configs.GENERAL.unlockEnabled) {
             UUID id = player.getUUID();
-            if (DELAY.isEmpty() && MAP.containsKey(id)) {
-                if (player.level().getRandom().nextInt(MAP.get(id).getRandom()) == 0) {
+            Type type = MAP.remove(id);
+            long now = player.level().getGameTime();
+            if (type != null && now >= NEXT_ROLL.getOrDefault(id, 0L)) {
+                NEXT_ROLL.put(id, now + ROLL_DELAY);
+                if (player.level().getRandom().nextInt(type.getRandom()) == 0) {
                     UnlockManager.unlock(player, true);
-                }
-                flag = true;
-            }
-            if (flag) {
-                DELAY.onward();
-                MAP.remove(id);
-                if (DELAY.ended()) {
-                    DELAY.reset();
-                    flag = false;
                 }
             }
         }

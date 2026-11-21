@@ -75,7 +75,7 @@ public class NeoForgeEventHandler {
             event.setCanceled(true);
             return;
         }
-        // Attacker's outgoing-damage trinkets (Silver Nail, Glory Shards) — scale before reductions.
+        // Attacker's outgoing-damage trinkets (Silver Nail, Glory Shards), scale before reductions.
         if (event.getSource().getEntity() instanceof Player attacker) {
             float mult = EventHandler.getOutgoingDamageMultiplier(attacker);
             if (mult != 1.0F) {

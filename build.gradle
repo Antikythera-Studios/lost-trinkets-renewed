@@ -34,7 +34,7 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${project.mc_version}"
-        // MC 26.1+ ships unobfuscated with parameter names — no mappings layer needed.
+        // MC 26.1+ ships unobfuscated with parameter names, no mappings layer needed.
     }
 
     java {

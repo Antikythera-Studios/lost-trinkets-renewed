@@ -1,0 +1,94 @@
+name: 🐛 Bug Report
+description: Submit a bug report related to Lost Trinkets, including mod conflicts, gameplay issues, or unexpected behavior.
+title: "[Bug]: "
+labels: [ "bug" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this report!
+
+        Make sure you have searched the [existing issues](https://github.com/Antikythera-Studios/lost-trinkets-renewed/issues) before submitting a new one.
+
+        To help us look into it quickly:
+
+        1. **Reproduce the bug** in a fresh Minecraft instance with as few mods as possible.
+        2. **Share the log** as a link using [mclo.gs](https://mclo.gs) (or any similar service).
+        3. **Fill in the details** below:
+            - Step-by-step instructions to reproduce the bug
+            - What you expected to happen, and what happens instead
+            - Whether it happened in older Lost Trinkets versions, if you have tested them (i.e., is this a regression?)
+            - Screenshots or videos if applicable
+
+        > [!IMPORTANT]
+        > Please reproduce the bug with a **minimal set of mods**.
+        > Reports from large modpacks (100+ mods) are very hard to debug, and we can only focus on issues that **originate from Lost Trinkets itself**.
+  - type: dropdown
+    id: mc-version
+    attributes:
+      label: Minecraft Version
+      description: The currently supported Minecraft versions
+      options:
+        - 26.1.2
+        - 1.21.1
+        - 1.20.1
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Mod Loader
+      options:
+        - NeoForge
+        - Forge
+        - Fabric
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Lost Trinkets Version
+      description: "Lost Trinkets versions can be found on: https://modrinth.com/mod/lost-trinkets-renewed/versions"
+      placeholder: e.g., 21.1.4
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Singleplayer
+        - LAN or hosted world (e.g., Essential, e4mc)
+        - Dedicated server
+    validations:
+      required: true
+  - type: input
+    id: log-link
+    attributes:
+      label: Minecraft Log Link
+      description: "The full Minecraft log where the bug happens, uploaded via https://mclo.gs (or a similar web service)"
+      placeholder: e.g., https://mclo.gs/whUNiDf
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Bug Details
+      description: Provide a clear, step-by-step explanation of the bug.
+      placeholder: |
+        Example:
+        1. Equip the Magneto trinket
+        2. Right-click the air with an empty hand
+        3. Nearby items are not collected
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Antikythera-Studios/lost-trinkets-renewed/blob/HEAD/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
